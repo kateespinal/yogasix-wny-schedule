@@ -1,130 +1,255 @@
-<!doctype html>
+export default {
+  async fetch(req) {
+    const url = new URL(req.url);
+    const pathname = url.pathname;
+
+    // CORS preflight (kept open so you can embed later if you want)
+    if (req.method === "OPTIONS") {
+      return new Response(null, {
+        headers: {
+          "access-control-allow-origin": "*",
+          "access-control-allow-methods": "GET,HEAD,OPTIONS",
+          "access-control-allow-headers": "Content-Type, *",
+          "access-control-max-age": "86400"
+        }
+      });
+    }
+
+    // Build ClubReady DAILY target; forward typical date/day params
+    const DAILY_BASE = "https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F";
+
+    // Gather supported query params (we’ll send all; ClubReady will use what it recognizes)
+    const fwd = new URLSearchParams();
+    for (const k of ["date","Date","d","day","dayoffset","offset"]) {
+      if (url.searchParams.has(k)) fwd.set(k, url.searchParams.get(k));
+    }
+
+    // If none provided, default to today (dayoffset=0)
+    if (![...fwd.keys()].length) fwd.set("dayoffset", "0");
+
+    const target = DAILY_BASE + "&" + fwd.toString();
+
+    // Fetch upstream HTML
+    let upstreamHtml;
+    try {
+      const upstream = await fetch(target, {
+        headers: { "User-Agent": "Mozilla/5.0 (ClubReady Daily Pretty Worker)" },
+        cf: { cacheEverything: true, cacheTtl: 120 }
+      });
+      upstreamHtml = await upstream.text();
+    } catch (e) {
+      return htmlResponse(errorPage("Upstream fetch failed. Please try again."), 502);
+    }
+
+    // Sanitize + flatten to text
+    const raw = upstreamHtml
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+      .replace(/\son\w+="[^"]*"/gi, "")
+      .replace(/\son\w+='[^']*'/gi, "");
+
+    const text = toPlainText(raw);
+
+    // Parse classes from text
+    const classes = parseDailyFromText(text);
+
+    // Routes:
+    if (pathname === "/json") {
+      return new Response(JSON.stringify({ ok: true, classes }, null, 2), {
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "access-control-allow-origin": "*",
+          "cache-control": "public, max-age=90"
+        }
+      });
+    }
+
+    // Otherwise render pretty HTML
+    const heading = dayHeading(fwd);
+    const page = renderPage({ heading, classes });
+    return htmlResponse(page, 200);
+  }
+};
+
+/* ---------------- helpers ---------------- */
+
+function htmlResponse(html, status=200) {
+  return new Response(html, {
+    status,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "access-control-allow-origin": "*",
+      "cache-control": "public, max-age=90"
+    }
+  });
+}
+
+// Turn HTML into readable text we can regex on
+function toPlainText(html) {
+  return html
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")        // strip all tags
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\u00A0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function dayHeading(fwd) {
+  if (fwd.has("dayoffset")) {
+    const off = Number(fwd.get("dayoffset") || "0") || 0;
+    const d = new Date();
+    d.setDate(d.getDate() + off);
+    return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+  }
+  if (fwd.has("date")) {
+    const d = new Date(fwd.get("date"));
+    if (!isNaN(d)) return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+  }
+  if (fwd.has("Date")) {
+    const d = new Date(fwd.get("Date"));
+    if (!isNaN(d)) return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+  }
+  return "Today";
+}
+
+// Parse: split by time, then extract first usable line as class; next name-like token as teacher
+function parseDailyFromText(txt) {
+  const classes = [];
+  const timePattern = "(?:1[0-2]|0?[1-9]):[0-5][0-9]\\s?(?:AM|PM)";
+  const re = new RegExp(`(${timePattern})([\\s\\S]*?)(?=${timePattern}|$)`, "gi");
+  let m;
+  while ((m = re.exec(txt)) !== null) {
+    const time = clean(m[1]);
+    const chunk = clean(m[2]);
+    if (!time) continue;
+
+    const parts = chunk
+      .split(/(?:\r?\n)|·|\u2022|\s-\s|;|,\s/)
+      .map(clean)
+      .filter(Boolean)
+      .slice(0, 8);
+
+    let title = "", teacher = "";
+    for (const p of parts) {
+      // ignore durations/space counts
+      if (/(?:mins?|minute|hour)/i.test(p)) continue;
+      if (/\bspaces?\b|\boccupied\b/i.test(p)) continue;
+
+      if (!title) { title = p; continue; }
+
+      // name-like: "Ava", "Ava M", "Ava Marie"
+      if (!teacher && /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s*[A-Z]\.?)?$/.test(p)) {
+        teacher = p; break;
+      }
+    }
+    classes.push({ time, title, teacher });
+  }
+  return classes;
+}
+
+function clean(s) { return (s || "").replace(/\u00A0/g, " ").replace(/\s+/g, " ").trim(); }
+
+/* ---------- render HTML page ---------- */
+function renderPage({ heading, classes }) {
+  const rows = classes.length
+    ? classes.map(c => rowHTML(c)).join("")
+    : `<div class="empty">No classes found.</div>`;
+
+  return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>YogaSix WNY • Schedule</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+<title>YogaSix WNY • ${escapeHtml(heading)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#67d5d2" />
 <style>
-  :root{
-    --teal:#67d5d2; --lav:#b497e7; --ink:#0f172a;
-    --panel: rgba(255,255,255,.80);
-    --panel-strong: rgba(255,255,255,.92);
-    --shadow: 0 12px 28px rgba(15,23,42,.18);
-    --radius: 20px;
-  }
-  * { box-sizing: border-box }
-  html, body { margin:0; min-height:100% }
-  body {
-    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color: var(--ink);
-    background: linear-gradient(135deg, var(--teal), var(--lav)) fixed;
-    background-size: 200% 200%;
-    animation: bg 18s ease-in-out infinite alternate;
-  }
-  @keyframes bg { 0%{background-position:0% 20%} 100%{background-position:100% 80%} }
-
-  .wrap { max-width:1100px; margin:36px auto 72px; padding:0 16px }
-
-  header { color:#fff; text-align:center; margin-bottom:18px }
-  header h1 {
-    font-family: Montserrat, Inter, sans-serif; font-weight:800;
-    font-size:clamp(28px,5vw,46px); margin:4px 0 6px; text-shadow:0 2px 14px rgba(0,0,0,.16);
-  }
-  header p { margin:0; opacity:.95; font-weight:600 }
-
-  .panel {
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(255,255,255,.65);
-    overflow: clip;
-    backdrop-filter: blur(10px) saturate(140%);
-  }
-  .panel .head {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:12px 16px; border-bottom:1px dashed rgba(0,0,0,.08);
-  }
-  .head h2 { font-weight:800; font-size:18px; margin:0 }
-  .head small { opacity:.7 }
-
-  /* Daily: short + translucent */
-  .panel.daily { background: var(--panel); margin-top:10px }
-  .daily .frameWrap { padding:12px }
-  .daily iframe {
-    width:100%; height:420px; border:0; border-radius:14px; background:#fff;
-  }
-
-  /* Weekly: full height so no inner scroll */
-  .panel.weekly { background: var(--panel-strong); margin-top:18px }
-  .weekly .frameWrap { padding:14px }
-  .weekly iframe {
-    width:100%; height:1600px; border:0; border-radius:14px; background:#fff;
-  }
-
-  /* Soft sparkles/flowers background */
-  .floaters{position:fixed; inset:0; pointer-events:none}
-  .f{position:absolute; opacity:.18; animation:rise var(--t) linear infinite; font-size:var(--fs,18px)}
-  @keyframes rise{0%{transform:translateY(105vh) translateX(var(--sx,0))}100%{transform:translateY(-10vh) translateX(var(--ex,0))}}
-
-  .actions{margin:14px auto 8px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  .btn{
-    background:linear-gradient(135deg,var(--teal),var(--lav)); color:#fff; text-decoration:none;
-    border:0; border-radius:999px; padding:10px 14px; font-weight:700; box-shadow:0 8px 18px rgba(0,0,0,.12)
-  }
-  .btn:hover{ transform:translateY(-1px) }
+:root{
+  --teal:#67d5d2; --lav:#b497e7;
+  --ink:#0f172a; --muted:#64748b;
+  --panel:rgba(255,255,255,.92); --pill:#f6f9fc;
+  --radius:18px; --shadow:0 12px 28px rgba(15,23,42,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--ink);
+  background:linear-gradient(135deg,var(--teal),var(--lav)) fixed;
+  background-size:200% 200%;
+  animation:bg 18s ease-in-out infinite alternate;
+}
+@keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
+.wrap{max-width:980px;margin:36px auto 72px;padding:0 16px}
+header{color:#fff;text-align:center;margin-bottom:18px}
+header h1{font-family:Montserrat,Inter,sans-serif;font-weight:800;font-size:clamp(26px,5vw,44px);margin:6px 0 2px;text-shadow:0 2px 14px rgba(0,0,0,.18)}
+header p{margin:0;opacity:.95;font-weight:600}
+.panel{background:var(--panel);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(10px) saturate(140%);overflow:clip}
+.head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px dashed rgba(0,0,0,.08)}
+.head h2{margin:0;font-weight:800;font-size:18px}
+.content{padding:12px 14px 16px}
+.list{display:flex;flex-direction:column;gap:12px}
+.row{
+  display:grid; grid-template-columns:110px 1fr; gap:14px;
+  background:var(--pill); border:1px solid rgba(15,23,42,.06);
+  border-radius:16px; padding:12px 14px; align-items:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+}
+.time{
+  font-weight:800; letter-spacing:.02em; color:#0b2742;
+  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:999px; padding:8px 10px; text-align:center;
+}
+.titleLine{font-weight:700;color:#0a1424}
+.empty{padding:24px;text-align:center;color:#6b7a89}
+.actions{margin:14px auto 8px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{background:linear-gradient(135deg,var(--teal),var(--lav));color:#fff;text-decoration:none;border:0;border-radius:999px;padding:10px 14px;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.btn:hover{transform:translateY(-1px)}
 </style>
 </head>
 <body>
-  <!-- subtle sparkles/flowers -->
-  <div class="floaters" aria-hidden="true">
-    <div class="f" style="left:10%; --t:36s; --fs:18px; --sx:-10px; --ex:10px;">✦</div>
-    <div class="f" style="left:30%; --t:30s; --fs:20px; --sx:0; --ex:-10px;">✿</div>
-    <div class="f" style="left:55%; --t:34s; --fs:18px; --sx:8px; --ex:-18px;">✦</div>
-    <div class="f" style="left:78%; --t:40s; --fs:20px; --sx:12px; --ex:-12px;">❀</div>
-  </div>
-
   <div class="wrap">
     <header>
       <h1>YogaSix West New York</h1>
-      <p>Live Class Schedule</p>
+      <p>${escapeHtml(heading)}</p>
     </header>
+
+    <div class="panel">
+      <div class="head">
+        <h2>Today's Classes</h2>
+        <small>Parsed from ClubReady Daily</small>
+      </div>
+      <div class="content">
+        <div class="list">
+          ${rows}
+        </div>
+      </div>
+    </div>
 
     <div class="actions">
       <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
       <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
       <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
     </div>
-
-    <!-- DAILY (short, translucent) -->
-    <section class="panel daily">
-      <div class="head">
-        <h2>Today</h2>
-        <small>Auto-updated via ClubReady</small>
-      </div>
-      <div class="frameWrap">
-        <iframe
-          title="Daily schedule"
-          src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F"
-          loading="lazy">
-        </iframe>
-      </div>
-    </section>
-
-    <!-- WEEKLY (full height, no inner scroll) -->
-    <section class="panel weekly">
-      <div class="head">
-        <h2>This Week</h2>
-        <small>7-day view</small>
-      </div>
-      <div class="frameWrap">
-        <iframe
-          title="Weekly schedule"
-          src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33"
-          loading="lazy">
-        </iframe>
-      </div>
-    </section>
   </div>
 </body>
-</html>
+</html>`;
+}
+
+function rowHTML(c) {
+  // Class | Teacher — both bold, no duration/spots
+  const bits = [c.title, c.teacher].filter(Boolean).join(" | ");
+  return `<div class="row">
+    <div class="time">${escapeHtml(c.time || "")}</div>
+    <div><div class="titleLine">${escapeHtml(bits)}</div></div>
+  </div>`;
+}
+
+function escapeHtml(s="") {
+  return s.replace(/[&<>"']/g, m =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])
+  );
+}
