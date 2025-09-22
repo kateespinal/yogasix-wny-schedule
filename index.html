@@ -1,17 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="both">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>YogaSix West New York • Live Class Schedule</title>
   <meta name="description" content="YogaSix West New York — today’s classes and full class schedule, updated in real time via ClubReady. Book your spot and find your flow." />
-  <meta property="og:title" content="YogaSix West New York • Live Class Schedule" />
-  <meta property="og:description" content="Today’s classes and full class schedule, updated in real time via ClubReady." />
-  <meta property="og:type" content="website" />
   <meta name="theme-color" content="#67d5d2" />
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -19,221 +14,84 @@
       --lav:#b497e7;
       --ink:#0f172a;
       --text:#1f2937;
-      --muted:#6b7280;
-      --card: rgba(255,255,255,0.78);
+      --muted:#64748b;
+      --card: rgba(255,255,255,0.82);
       --ring: rgba(103,213,210,0.35);
-      --shadow: 0 10px 30px rgba(61, 90, 128, 0.18);
+      --shadow: 0 14px 34px rgba(61, 90, 128, 0.18);
       --radius: 22px;
       --radius-sm: 14px;
-      --maxw: 1100px;
+      --maxw: 1200px;
     }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      height: 100%;
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
-      background: linear-gradient(135deg, var(--teal), var(--lav)) fixed;
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{
+      color:var(--text);
+      font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,255,255,.28), transparent 60%),
+        radial-gradient(1200px 600px at 80% 110%, rgba(255,255,255,.28), transparent 60%),
+        linear-gradient(135deg, var(--teal), var(--lav)) fixed;
       background-size: 200% 200%;
       animation: bgShift 18s ease-in-out infinite alternate;
+      overflow-x:hidden;
     }
-    @keyframes bgShift {
-      0% { background-position: 0% 20%; }
-      100% { background-position: 100% 80%; }
-    }
+    @keyframes bgShift{0%{background-position:0% 20%}100%{background-position:100% 80%}}
 
-    .wrap {
-      max-width: var(--maxw);
-      margin: 40px auto 64px;
-      padding: 0 20px;
+    /* Floating lotus & sparkles */
+    .floaters{position:fixed; inset:0; pointer-events:none; overflow:hidden}
+    .floater{
+      position:absolute; opacity:.22; filter:blur(.2px);
+      animation: drift var(--t) linear infinite;
+      font-size: var(--fs, 22px);
     }
-
-    header.site {
-      display: grid;
-      gap: 12px;
-      justify-items: center;
-      text-align: center;
-      color: white;
-      padding: 24px 0 8px;
+    @keyframes drift{
+      0%{transform:translateY(110vh) translateX(var(--sx,0))}
+      100%{transform:translateY(-15vh) translateX(var(--ex,0))}
     }
 
-    .badge {
-      display:inline-block;
-      padding: 6px 12px;
-      font-size: 12px;
-      letter-spacing:.06em;
-      border-radius: 999px;
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.35);
-      backdrop-filter: blur(6px);
+    .wrap{max-width:var(--maxw); margin:40px auto 64px; padding:0 20px}
+    header.site{display:grid; gap:10px; justify-items:center; text-align:center; color:#fff}
+    .badge{
+      display:inline-block; padding:6px 12px; font-size:12px; letter-spacing:.06em;
+      border-radius:999px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35); backdrop-filter: blur(6px);
     }
+    h1{margin:0;font-family:Montserrat, Poppins, sans-serif; font-weight:800; font-size: clamp(28px, 5vw, 48px); line-height:1.05; text-shadow:0 2px 16px rgba(0,0,0,.18)}
+    p.sub{margin:2px 0 0; color:#f8fafc; opacity:.96; font-size:clamp(14px,1.8vw,18px)}
 
-    h1 {
-      margin: 0;
-      font-family: Montserrat, Inter, sans-serif;
-      font-weight: 800;
-      font-size: clamp(28px, 5vw, 48px);
-      line-height: 1.05;
-      text-shadow: 0 2px 16px rgba(0,0,0,.18);
+    /* Control bar */
+    .controls{
+      margin:18px auto 22px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center
     }
-
-    p.sub {
-      margin: 4px 0 0;
-      color: #f8fafc;
-      opacity: .95;
-      font-size: clamp(14px, 1.8vw, 18px);
+    .seg{
+      display:inline-flex; background:rgba(255,255,255,.35); border:1px solid rgba(255,255,255,.6);
+      border-radius:999px; backdrop-filter: blur(6px); padding:4px; box-shadow:0 10px 20px rgba(0,0,0,.08)
     }
-
-    .card {
-      margin: 22px auto 0;
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.55);
-      border-right-color: rgba(255,255,255,.38);
-      border-bottom-color: rgba(255,255,255,.38);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      backdrop-filter: saturate(140%) blur(10px);
-      overflow: clip;
+    .seg button{
+      appearance:none; border:0; background:transparent; color:#0b2840; font-weight:600; padding:10px 14px;
+      border-radius:999px; cursor:pointer; transition: all .15s ease; font-size:14px
     }
-
-    .card__head {
-      padding: 22px 22px 8px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
+    .seg button.active{background:linear-gradient(135deg, var(--teal), var(--lav)); color:#fff; box-shadow:0 6px 18px rgba(0,0,0,.12)}
+    .quick{
+      display:flex; gap:10px; flex-wrap:wrap
     }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff, var(--teal));
-      box-shadow: 0 0 0 6px var(--ring);
-      flex: 0 0 auto;
+    .btn{
+      appearance:none; border:0; border-radius:999px; padding:10px 14px; font-weight:600; cursor:pointer; text-decoration:none; color:#fff;
+      background:linear-gradient(135deg, var(--teal), var(--lav)); box-shadow:0 6px 16px rgba(0,0,0,.12); transition:transform .08s ease, box-shadow .2s ease
     }
+    .btn:hover{transform:translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,.16)}
+    .btn:active{transform:translateY(0); box-shadow:0 6px 16px rgba(0,0,0,.12)}
 
-    .card__title {
-      font-family: Montserrat, Inter, sans-serif;
-      font-weight: 700;
-      font-size: clamp(18px, 2.5vw, 24px);
-      margin: 0;
+    /* Panels grid */
+    .panels{
+      display:grid; gap:22px;
+      grid-template-columns: 1fr;
     }
-
-    .card__sub {
-      color: var(--muted);
-      font-size: 14px;
-      margin-left: auto;
+    @media (min-width: 980px){
+      .panels{ grid-template-columns: 1fr 1fr; }
+      body[data-mode="daily"] .panel.full, body[data-mode="full"] .panel.daily{ display:none }
     }
-
-    .btnrow {
-      display: flex;
-      gap: 12px;
-      padding: 0 22px 16px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      appearance: none;
-      border: 0;
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-      background: linear-gradient(135deg, var(--teal), var(--lav));
-      box-shadow: 0 6px 16px rgba(0,0,0,.12);
-      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
-      display: inline-flex; gap: 8px; align-items: center;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,.16); }
-    .btn:active { transform: translateY(0); box-shadow: 0 6px 16px rgba(0,0,0,.12); }
-
-    .iframeWrap {
-      width: 100%;
-      border-top: 1px dashed rgba(0,0,0,.06);
-      background: rgba(255,255,255,.75);
-      padding: clamp(8px, 1.8vw, 16px);
-    }
-
-    .frame {
-      width: 100%;
-      height: min(1200px, 80vh);
-      border: 0;
-      border-radius: var(--radius-sm);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      background: white;
-    }
-
-    .info {
-      margin: 16px 0 0;
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    footer.site {
-      color: white;
-      text-align: center;
-      opacity: .95;
-      padding: 28px 0 60px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 640px) {
-      .btnrow { padding-bottom: 12px; }
-      .card__head { padding: 18px 16px 6px; }
-      .btn { padding: 11px 16px; }
-      .iframeWrap { padding: 8px; }
-      .frame { height: 76vh; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <header class="site" aria-label="Page header">
-      <span class="badge">YogaSix West New York</span>
-      <h1>Live Class Schedule</h1>
-      <p class="sub">Updated automatically via ClubReady • Find your flow, daily.</p>
-    </header>
-
-    <main class="card" role="main" aria-label="Live schedule card">
-      <div class="card__head">
-        <span class="dot" aria-hidden="true"></span>
-        <h2 class="card__title">Today’s Classes</h2>
-        <div class="card__sub">Auto-updated daily from ClubReady</div>
-      </div>
-
-      <div class="iframeWrap">
-        <iframe
-          class="frame"
-          title="YogaSix Daily Schedule"
-          src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F">
-        </iframe>
-      </div>
-    </main>
-
-    <main class="card" role="main" aria-label="Full schedule card" style="margin-top:32px;">
-      <div class="card__head">
-        <span class="dot" aria-hidden="true"></span>
-        <h2 class="card__title">Full Class Schedule</h2>
-        <div class="card__sub">Browse all upcoming classes</div>
-      </div>
-
-      <div class="iframeWrap">
-        <iframe
-          class="frame"
-          title="YogaSix Full Schedule"
-          src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33">
-        </iframe>
-      </div>
-    </main>
-
-    <footer class="site">
-      © YogaSix West New York • 45 Riverwalk Place • (201) 361-5299
-    </footer>
-  </div>
-</body>
-</html>
+    /* On small screens, the mode buttons switch visibility */
+    @media (max-width: 979px){
+      body[data-mode="both"] .panel{ display:block }
+      body[data-mode="daily"] .panel.full{ display:none }
+      body[data-mode="full"] .panel.daily{ displa
