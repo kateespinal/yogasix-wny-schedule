@@ -5,29 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>YogaSix WNY • Live Class Schedule</title>
 <meta name="theme-color" content="#67d5d2" />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --teal:#67d5d2; --lav:#b497e7; --text:#142132; --muted:#64748b;
-    --panel:rgba(255,255,255,.82); --pill:#f3f7fb;
+    --teal:#67d5d2; --lav:#b497e7;
+    --text:#111827; --muted:#6b7280;
+    --panel:rgba(255,255,255,.85); --pill:#f6f9fc;
     --radius:18px; --radius-lg:22px; --shadow:0 10px 28px rgba(31,41,55,.16);
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{
-    font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     color:var(--text);
     background:linear-gradient(135deg,var(--teal),var(--lav)) fixed;
     background-size:200% 200%;
     animation:bg 18s ease-in-out infinite alternate;
+    overflow-x:hidden;
   }
   @keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
 
   .wrap{max-width:1000px;margin:36px auto 72px;padding:0 16px}
   header{color:#fff;text-align:center}
-  header h1{margin:.25rem 0;font-family:Montserrat;font-weight:800;font-size:clamp(28px,5vw,46px);text-shadow:0 2px 14px rgba(0,0,0,.15)}
-  header p{margin:.25rem 0 0;opacity:.96}
+  header h1{margin:.25rem 0;font-family:Montserrat, Inter, sans-serif;font-weight:800;font-size:clamp(28px,5vw,46px);text-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header p{margin:.25rem 0 0;opacity:.95;font-weight:500}
 
   .actions{margin:16px auto 22px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .btn{border:0;border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--teal),var(--lav));box-shadow:0 6px 16px rgba(0,0,0,.12)}
@@ -36,44 +37,50 @@
   /* Panels */
   .panel{background:var(--panel);backdrop-filter:blur(10px) saturate(140%);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-top:18px}
   .panel .head{display:flex;align-items:center;gap:12px;padding:16px 18px}
-  .head h2{font-family:Montserrat;font-size:18px;margin:0}
-  .head small{margin-left:auto;color:var(--muted)}
+  .head h2{font-family:Inter,sans-serif;font-size:18px;font-weight:700;margin:0}
+  .head small{margin-left:auto;color:var(--muted);font-weight:500}
   .content{padding:0 16px 16px}
 
-  /* Daily rows */
+  /* List rows */
   .list{display:flex;flex-direction:column;gap:12px}
   .row{
-    display:grid; grid-template-columns: 120px 1fr; gap:12px;
-    background:var(--pill); border:1px solid rgba(0,0,0,.06);
-    border-radius:var(--radius); padding:12px 14px; align-items:center;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
+    display:grid; grid-template-columns: 120px 1fr; gap:14px;
+    background:var(--pill); border:1px solid rgba(15,23,42,.06);
+    border-radius:var(--radius); padding:14px; align-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);
   }
   .time{
-    font-family:Montserrat; font-weight:800; letter-spacing:.02em; color:#0f2340;
-    background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:999px; padding:8px 10px; text-align:center;
+    font-weight:800; letter-spacing:.02em; color:#0b2742;
+    background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:999px; padding:10px 12px; text-align:center;
   }
-  .title{font-weight:800; color:#111; margin-bottom:2px}
-  .teacher{font-weight:800; color:#111}
-  .meta{color:var(--muted); font-size:.92rem; margin-top:2px}
+  .title{font-weight:700; font-size:1.05rem; color:#0a1424; margin:0 0 2px 0}
+  .subline{display:flex; gap:10px; flex-wrap:wrap; align-items:baseline}
+  .teacher{font-weight:500; color:#111827; font-size:.95rem}
+  .spots{color:#6b7280; font-size:.9rem}
+  .meta{color:var(--muted); font-size:.9rem; margin-top:2px}
   .empty{padding:22px; text-align:center; color:#6b7a89}
 
-  /* Weekly iframe (always visible underneath) */
-  .weeklyWrap{padding:12px;background:rgba(255,255,255,.88);border-top:1px dashed rgba(0,0,0,.08);border-radius:16px}
-  .weeklyFrame{width:100%;height:1600px;border:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+  /* Weekly chips + grid */
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px 0}
+  .chip{background:#eef7f6;border:1px solid rgba(15,23,42,.08);color:#0b2840;border-radius:999px;padding:8px 12px;font-weight:600;cursor:pointer}
+  .chip.active{background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+  .grid{display:grid;gap:12px;grid-template-columns:1fr}
+  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr}}
 
   /* subtle floaters */
   .floaters{position:fixed; inset:0; pointer-events:none}
-  .f{position:absolute; opacity:.22; animation:rise var(--t) linear infinite; font-size:var(--fs,22px)}
+  .f{position:absolute; opacity:.18; animation:rise var(--t) linear infinite; font-size:var(--fs,18px)}
   @keyframes rise{0%{transform:translateY(105vh) translateX(var(--sx,0))}100%{transform:translateY(-10vh) translateX(var(--ex,0))}}
 </style>
 </head>
 <body>
   <!-- subtle sparkles/flowers -->
   <div class="floaters" aria-hidden="true">
-    <div class="f" style="left:10%; --t:36s; --fs:20px; --sx:-10px; --ex:10px;">✨</div>
-    <div class="f" style="left:30%; --t:30s; --fs:24px; --sx:0px; --ex:-10px;">🌸</div>
-    <div class="f" style="left:55%; --t:34s; --fs:20px; --sx:8px; --ex:-18px;">✨</div>
-    <div class="f" style="left:78%; --t:40s; --fs:24px; --sx:12px; --ex:-12px;">🌺</div>
+    <div class="f" style="left:10%; --t:36s; --fs:18px; --sx:-10px; --ex:10px;">✦</div>
+    <div class="f" style="left:30%; --t:30s; --fs:20px; --sx:0px; --ex:-10px;">✿</div>
+    <div class="f" style="left:55%; --t:34s; --fs:18px; --sx:8px; --ex:-18px;">✦</div>
+    <div class="f" style="left:78%; --t:40s; --fs:20px; --sx:12px; --ex:-12px;">❀</div>
   </div>
 
   <div class="wrap">
@@ -101,19 +108,16 @@
       </div>
     </section>
 
-    <!-- Weekly underneath (always shows) -->
+    <!-- Weekly (parsed) -->
     <section class="panel" id="weekly">
       <div class="head">
         <h2>This Week</h2>
-        <small>7-day view</small>
+        <small>Tap a day</small>
       </div>
       <div class="content">
-        <div class="weeklyWrap">
-          <iframe
-            class="weeklyFrame"
-            title="Weekly schedule"
-            src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33">
-          </iframe>
+        <div class="chips" id="weekChips"></div>
+        <div class="grid" id="weekGrid" aria-live="polite">
+          <div class="empty">Loading…</div>
         </div>
       </div>
     </section>
@@ -122,92 +126,126 @@
 <script>
 const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
 
-/* Fetch helper */
-async function get(url){
-  try{
-    const r = await fetch(url, { cache: "no-store" });
-    if(!r.ok) throw new Error(r.status);
-    return await r.text();
-  }catch(e){ return null; }
+/* ---------- helpers ---------- */
+const timePattern = "(?:1[0-2]|0?[1-9]):[0-5][0-9]\\s?(?:AM|PM)";
+const chunkRe = new RegExp(`(${timePattern})([\\s\\S]*?)(?=${timePattern}|$)`, "gi");
+const dayRegex = /(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/ig;
+const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+const clean = s => (s||"").replace(/\u00A0/g," ").replace(/\s+/g," ").trim();
+async function get(url){ try{ const r=await fetch(url,{cache:"no-store"}); if(!r.ok) throw 0; return await r.text(); } catch{ return null; } }
+
+/* Spots extractor: "11 Spaces Available" -> 11  */
+function spotsFrom(str){
+  const m = /\b(\d+)\s+spaces?/i.exec(str||"");
+  return m ? Number(m[1]) : null;
 }
 
-/* Clean utility */
-const clean = s => (s||"").replace(/\u00A0/g," ").replace(/\s+/g," ").trim();
-
-/* === Robust-but-simple daily parser ===
-   1) Chunk by each time token.
-   2) For each chunk, pick the first non-duration line as title,
-      the next “name-ish” token as instructor. */
-function parseDaily(html){
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const txt = clean(doc.body?.innerText || "");
-
-  // Build chunks: time + following text up to the next time
-  const time = "(?:1[0-2]|0?[1-9]):[0-5][0-9]\\s?(?:AM|PM)";
-  const re = new RegExp(`(${time})([\\s\\S]*?)(?=${time}|$)`, "gi");
-
-  const classes = [];
-  let m;
-  while ((m = re.exec(txt)) !== null) {
-    const timeStr = clean(m[1]);
-    const chunk   = clean(m[2]);
-
-    // Split chunk into small tokens; keep the first few lines only
+/* ---------- chunker used by both daily + weekly ---------- */
+function parseBlocksToClasses(text){
+  const classes=[]; let m;
+  while((m = chunkRe.exec(text)) !== null){
+    const t = clean(m[1]);                     // time
+    const chunk = clean(m[2]);                 // everything until next time
     const parts = chunk
-      .split(/(?:\r?\n)|·|\u2022| - |;|, /)
-      .map(clean)
-      .filter(Boolean)
-      .slice(0, 6);
+      .split(/(?:\r?\n)|·|\u2022| - |;|, /)    // light tokenization
+      .map(clean).filter(Boolean).slice(0,8);
 
-    if (!parts.length) { classes.push({ time: timeStr }); continue; }
-
-    // Identify title, duration, instructor, notes (very light rules)
-    let title="", duration="", instructor="", notes="";
-    for (const p of parts) {
-      if (!title && !/(mins?|minute|hour)/i.test(p) && !/spaces?/i.test(p) && !/occupied/i.test(p)) {
-        title = p;
-        continue;
-      }
-      if (!duration && /(mins?|minute|hour)/i.test(p)) { duration = p; continue; }
-      if (!instructor && /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s*[A-Z]\.?)?$/.test(p)) { // Name-ish
-        instructor = p;
-        continue;
-      }
-      if (!notes && (/spaces?/i.test(p) || /occupied/i.test(p))) { notes = p; continue; }
+    let title="", instructor="", duration="", spots=null, notes="";
+    for(const p of parts){
+      if(!title && !/(mins?|minute|hour)/i.test(p) && !/spaces?|occupied/i.test(p)) { title=p; continue; }
+      if(!duration && /(mins?|minute|hour)/i.test(p)) { duration=p; continue; }
+      if(spots===null && /spaces?/i.test(p)){ spots = spotsFrom(p); continue; }
+      if(!instructor && /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s*[A-Z]\.?)?$/.test(p)){ instructor=p; continue; }
+      if(!notes && (/occupied/i.test(p) || /free class/i.test(p))) { notes=p; continue; }
     }
-
-    classes.push({ time: timeStr, title, instructor, duration, notes });
+    classes.push({ time:t, title, instructor, duration, spots, notes });
   }
-
   return classes;
 }
 
-/* Render daily list */
-function renderDaily(list){
-  const el = document.getElementById("dailyList");
-  if(!list || !list.length){ el.innerHTML = '<div class="empty">No classes today.</div>'; return; }
-  el.innerHTML = "";
-  list.forEach(c=>{
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
+function parseDaily(html){
+  const doc = new DOMParser().parseFromString(html,"text/html");
+  const text = clean(doc.body?.innerText || "");
+  return parseBlocksToClasses(text);
+}
+
+function parseWeekly(html){
+  const doc = new DOMParser().parseFromString(html,"text/html");
+  const text = clean(doc.body?.innerText || "");
+
+  const indices=[]; let m;
+  while((m = dayRegex.exec(text)) !== null){ indices.push({day:m[1], i:m.index}); }
+
+  const week = {};
+  if(indices.length >= 5){
+    for(let k=0;k<indices.length;k++){
+      const start = indices[k].i;
+      const end   = (k+1<indices.length ? indices[k+1].i : text.length);
+      const section = clean(text.slice(start, end).replace(new RegExp(indices[k].day,'i'), ''));
+      week[indices[k].day] = parseBlocksToClasses(section);
+    }
+  } else {
+    // fallback: try to split approximately into 7 buckets
+    const parts = text.split(/(?=Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/i).filter(Boolean);
+    DAY_NAMES.forEach((d,i)=> week[d] = parseBlocksToClasses(clean(parts[i]||"")));
+  }
+  return week;
+}
+
+/* ---------- rendering ---------- */
+function rowHTML(c){
+  const spots = (c.spots!=null) ? `<span class="spots">(${c.spots} spots)</span>` : "";
+  const dur   = c.duration ? `<span class="meta">${c.duration}</span>` : "";
+  const note  = c.notes ? `<span class="meta">${c.notes}</span>` : "";
+  return `
+    <div class="row">
       <div class="time">${c.time || ""}</div>
       <div>
         ${c.title ? `<div class="title">${c.title}</div>` : ""}
-        ${c.instructor ? `<div class="teacher">${c.instructor}</div>` : ""}
-        ${c.duration ? `<div class="meta">${c.duration}</div>` : ""}
-        ${c.notes ? `<div class="meta">${c.notes}</div>` : ""}
+        <div class="subline">
+          ${c.instructor ? `<span class="teacher">${c.instructor}</span>` : ""}
+          ${spots}
+        </div>
+        ${dur}${note}
       </div>
-    `;
-    el.appendChild(row);
-  });
+    </div>
+  `;
 }
 
-/* Boot */
+function renderDaily(list){
+  const el = document.getElementById("dailyList");
+  if(!list || !list.length){ el.innerHTML = '<div class="empty">No classes today.</div>'; return; }
+  el.innerHTML = list.map(rowHTML).join("");
+}
+
+function renderWeekChips(keys, active, onClick){
+  const wrap = document.getElementById("weekChips");
+  wrap.innerHTML = keys.map(k=>`<button class="chip ${k===active?'active':''}" data-k="${k}">${k}</button>`).join("");
+  wrap.querySelectorAll(".chip").forEach(b=> b.onclick = () => onClick(b.dataset.k));
+}
+
+function renderWeekDay(list){
+  const el = document.getElementById("weekGrid");
+  if(!list || !list.length){ el.innerHTML = '<div class="empty">No classes for this day.</div>'; return; }
+  el.innerHTML = list.map(rowHTML).join("");
+}
+
+/* ---------- boot ---------- */
 (async function init(){
-  const html = await get(`${WORKER_BASE}/?which=daily`);
-  const classes = html ? parseDaily(html) : [];
-  renderDaily(classes);
+  // DAILY
+  const dailyHTML = await get(`${WORKER_BASE}/?which=daily`);
+  renderDaily(dailyHTML ? parseDaily(dailyHTML) : []);
+
+  // WEEKLY
+  const weeklyHTML = await get(`${WORKER_BASE}/?which=weekly`);
+  const week = weeklyHTML ? parseWeekly(weeklyHTML) : {};
+  const todayKey = DAY_NAMES[new Date().getDay()];
+  // Prefer days with data; otherwise still show all chips
+  const keys = DAY_NAMES.filter(d => Array.isArray(week[d]) && week[d].length) || DAY_NAMES;
+  const active = keys.includes(todayKey) ? todayKey : (keys[0] || "Monday");
+  renderWeekChips(DAY_NAMES, active, (k)=> renderWeekDay(week[k]||[]));
+  renderWeekDay(week[active] || []);
 })();
 </script>
 </body>
