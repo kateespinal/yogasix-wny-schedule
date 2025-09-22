@@ -1,90 +1,164 @@
 export default {
   async fetch(req) {
     const url = new URL(req.url);
-    const pathname = url.pathname;
+    const path = url.pathname;
 
-    // CORS preflight (kept open so you can embed later if you want)
+    // CORS preflight (kept permissive so you can embed later if you want)
     if (req.method === "OPTIONS") {
       return new Response(null, {
         headers: {
           "access-control-allow-origin": "*",
           "access-control-allow-methods": "GET,HEAD,OPTIONS",
           "access-control-allow-headers": "Content-Type, *",
-          "access-control-max-age": "86400"
-        }
+          "access-control-max-age": "86400",
+        },
       });
     }
 
-    // Build ClubReady DAILY target; forward typical date/day params
-    const DAILY_BASE = "https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F";
-
-    // Gather supported query params (we’ll send all; ClubReady will use what it recognizes)
-    const fwd = new URLSearchParams();
-    for (const k of ["date","Date","d","day","dayoffset","offset"]) {
-      if (url.searchParams.has(k)) fwd.set(k, url.searchParams.get(k));
+    // Routes
+    if (path === "/json") {
+      const { classes, heading } = await fetchDailyParsed(url);
+      return json({ ok: true, heading, classes });
     }
 
-    // If none provided, default to today (dayoffset=0)
-    if (![...fwd.keys()].length) fwd.set("dayoffset", "0");
-
-    const target = DAILY_BASE + "&" + fwd.toString();
-
-    // Fetch upstream HTML
-    let upstreamHtml;
-    try {
-      const upstream = await fetch(target, {
-        headers: { "User-Agent": "Mozilla/5.0 (ClubReady Daily Pretty Worker)" },
-        cf: { cacheEverything: true, cacheTtl: 120 }
-      });
-      upstreamHtml = await upstream.text();
-    } catch (e) {
-      return htmlResponse(errorPage("Upstream fetch failed. Please try again."), 502);
+    if (path === "/week.json") {
+      const { weekStart, days } = await fetchWeekParsed(url);
+      return json({ ok: true, weekStart, days });
     }
 
-    // Sanitize + flatten to text
-    const raw = upstreamHtml
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
-      .replace(/\son\w+="[^"]*"/gi, "")
-      .replace(/\son\w+='[^']*'/gi, "");
-
-    const text = toPlainText(raw);
-
-    // Parse classes from text
-    const classes = parseDailyFromText(text);
-
-    // Routes:
-    if (pathname === "/json") {
-      return new Response(JSON.stringify({ ok: true, classes }, null, 2), {
-        headers: {
-          "content-type": "application/json; charset=utf-8",
-          "access-control-allow-origin": "*",
-          "cache-control": "public, max-age=90"
-        }
-      });
+    if (path === "/week") {
+      const { weekStart, days } = await fetchWeekParsed(url);
+      const page = renderWeekPage({ weekStart, days });
+      return html(page);
     }
 
-    // Otherwise render pretty HTML
-    const heading = dayHeading(fwd);
-    const page = renderPage({ heading, classes });
-    return htmlResponse(page, 200);
-  }
+    // Default: pretty Daily HTML
+    const { classes, heading } = await fetchDailyParsed(url);
+    const page = renderDailyPage({ heading, classes });
+    return html(page);
+  },
 };
 
-/* ---------------- helpers ---------------- */
+/* =========================
+   DATA FETCH + PARSING
+   ========================= */
 
-function htmlResponse(html, status=200) {
-  return new Response(html, {
-    status,
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=90"
+const DAILY_BASE =
+  "https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F";
+
+// Build an upstream URL for a specific day.
+// We send multiple param styles; ClubReady will use what it recognizes.
+function buildDailyURLFor(dateObj, sourceURL) {
+  const u = new URL(DAILY_BASE);
+  // Prefer explicit parameters from the caller (sourceURL) if present:
+  // We preserve any given date-like param for single-day requests
+  const src = sourceURL;
+  const hasAny =
+    src.searchParams.has("date") ||
+    src.searchParams.has("Date") ||
+    src.searchParams.has("d") ||
+    src.searchParams.has("day") ||
+    src.searchParams.has("offset") ||
+    src.searchParams.has("dayoffset");
+
+  if (hasAny) {
+    for (const k of ["date", "Date", "d", "day", "offset", "dayoffset"]) {
+      if (src.searchParams.has(k)) u.searchParams.set(k, src.searchParams.get(k));
     }
-  });
+  }
+
+  // Also attach normalized versions to maximize compatibility
+  const iso = fmtISO(dateObj); // YYYY-MM-DD
+  const us = fmtUS(dateObj);   // MM/DD/YYYY
+  const dayOffset = Math.round((dateAtMidnight(dateObj) - dateAtMidnight(new Date())) / 86400000);
+
+  u.searchParams.set("date", iso);
+  u.searchParams.set("Date", us);
+  u.searchParams.set("d", us);
+  u.searchParams.set("day", us);
+  u.searchParams.set("dayoffset", String(dayOffset));
+  u.searchParams.set("offset", String(dayOffset));
+
+  return u.toString();
 }
 
-// Turn HTML into readable text we can regex on
-function toPlainText(html) {
+async function fetchDailyParsed(sourceURL) {
+  const url = sourceURL instanceof URL ? sourceURL : new URL(sourceURL);
+  // Figure out which date they asked for; default = today
+  const d = resolveRequestedDate(url);
+  const target = buildDailyURLFor(d, url);
+
+  let upstreamHtml;
+  try {
+    const r = await fetch(target, {
+      headers: { "User-Agent": "Mozilla/5.0 (YogaSix Pretty Worker)" },
+      cf: { cacheEverything: true, cacheTtl: 120 },
+    });
+    upstreamHtml = await r.text();
+  } catch (e) {
+    return { heading: headingFromDate(d), classes: [] };
+  }
+
+  const sanitized = upstreamHtml
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/\son\w+="[^"]*"/gi, "")
+    .replace(/\son\w+='[^']*'/gi, "");
+
+  const text = htmlToText(sanitized);
+  const classes = parseDailyFromText(text);
+  return { heading: headingFromDate(d), classes };
+}
+
+async function fetchWeekParsed(sourceURL) {
+  const url = sourceURL instanceof URL ? sourceURL : new URL(sourceURL);
+  // Start of week = Sunday (0)
+  const today = new Date();
+  const sunday = new Date(today);
+  sunday.setHours(0, 0, 0, 0);
+  sunday.setDate(today.getDate() - today.getDay()); // back to Sunday
+
+  // Fetch 7 days in parallel
+  const tasks = Array.from({ length: 7 }, (_, i) => {
+    const di = new Date(sunday);
+    di.setDate(sunday.getDate() + i);
+    const target = buildDailyURLFor(di, url);
+    return (async () => {
+      try {
+        const r = await fetch(target, {
+          headers: { "User-Agent": "Mozilla/5.0 (YogaSix Pretty Worker)" },
+          cf: { cacheEverything: true, cacheTtl: 120 },
+        });
+        const html = await r.text();
+        const sanitized = html
+          .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+          .replace(/\son\w+="[^"]*"/gi, "")
+          .replace(/\son\w+='[^']*'/gi, "");
+        const text = htmlToText(sanitized);
+        const classes = parseDailyFromText(text);
+        return { date: di, classes };
+      } catch {
+        return { date: di, classes: [] };
+      }
+    })();
+  });
+
+  const results = await Promise.all(tasks);
+  const days = results.map(({ date, classes }) => ({
+    key: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()],
+    dateISO: fmtISO(date),
+    datePretty: headingFromDate(date),
+    classes,
+  }));
+
+  return { weekStart: fmtISO(sunday), days };
+}
+
+/* =========================
+   PARSER
+   ========================= */
+
+// Turn HTML to readable text
+function htmlToText(html) {
   return html
     .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")        // strip all tags
@@ -98,27 +172,8 @@ function toPlainText(html) {
     .trim();
 }
 
-function dayHeading(fwd) {
-  if (fwd.has("dayoffset")) {
-    const off = Number(fwd.get("dayoffset") || "0") || 0;
-    const d = new Date();
-    d.setDate(d.getDate() + off);
-    return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
-  }
-  if (fwd.has("date")) {
-    const d = new Date(fwd.get("date"));
-    if (!isNaN(d)) return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
-  }
-  if (fwd.has("Date")) {
-    const d = new Date(fwd.get("Date"));
-    if (!isNaN(d)) return d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
-  }
-  return "Today";
-}
-
-// Parse: split by time, then extract first usable line as class; next name-like token as teacher
 function parseDailyFromText(txt) {
-  const classes = [];
+  const out = [];
   const timePattern = "(?:1[0-2]|0?[1-9]):[0-5][0-9]\\s?(?:AM|PM)";
   const re = new RegExp(`(${timePattern})([\\s\\S]*?)(?=${timePattern}|$)`, "gi");
   let m;
@@ -127,6 +182,7 @@ function parseDailyFromText(txt) {
     const chunk = clean(m[2]);
     if (!time) continue;
 
+    // Tokenize chunk
     const parts = chunk
       .split(/(?:\r?\n)|·|\u2022|\s-\s|;|,\s/)
       .map(clean)
@@ -135,36 +191,90 @@ function parseDailyFromText(txt) {
 
     let title = "", teacher = "";
     for (const p of parts) {
-      // ignore durations/space counts
+      // Skip durations and capacities
       if (/(?:mins?|minute|hour)/i.test(p)) continue;
       if (/\bspaces?\b|\boccupied\b/i.test(p)) continue;
 
       if (!title) { title = p; continue; }
 
-      // name-like: "Ava", "Ava M", "Ava Marie"
+      // Detect name-like patterns: "Ava", "Ava M", "Ava Marie"
       if (!teacher && /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s*[A-Z]\.?)?$/.test(p)) {
-        teacher = p; break;
+        teacher = p;
+        break;
       }
     }
-    classes.push({ time, title, teacher });
+    out.push({ time, title, teacher });
   }
-  return classes;
+  return out;
 }
 
 function clean(s) { return (s || "").replace(/\u00A0/g, " ").replace(/\s+/g, " ").trim(); }
 
-/* ---------- render HTML page ---------- */
-function renderPage({ heading, classes }) {
+/* =========================
+   RENDERING (HTML)
+   ========================= */
+
+function renderDailyPage({ heading, classes }) {
   const rows = classes.length
-    ? classes.map(c => rowHTML(c)).join("")
+    ? classes.map(rowHTML).join("")
     : `<div class="empty">No classes found.</div>`;
 
+  return basePage({
+    title: `Daily • ${heading}`,
+    headerTitle: "YogaSix West New York",
+    headerSubtitle: heading,
+    inner: `
+      <section class="panel">
+        <div class="head"><h2>Today's Classes</h2><small>Parsed from ClubReady</small></div>
+        <div class="content"><div class="list">${rows}</div></div>
+      </section>
+      <div class="actions">
+        <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
+        <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
+      </div>
+    `,
+  });
+}
+
+function renderWeekPage({ weekStart, days }) {
+  const grid = days.map(d => {
+    const rows = d.classes.length
+      ? d.classes.map(rowHTML).join("")
+      : `<div class="empty">No classes</div>`;
+    return `
+      <div class="dayCard">
+        <div class="dayHead"><div class="dayName">${escapeHtml(d.key)}</div><div class="dayDate">${escapeHtml(d.datePretty)}</div></div>
+        <div class="dayBody"><div class="list">${rows}</div></div>
+      </div>
+    `;
+  }).join("");
+
+  return basePage({
+    title: `This Week • starting ${weekStart}`,
+    headerTitle: "YogaSix West New York",
+    headerSubtitle: "This Week",
+    inner: `
+      <section class="panel">
+        <div class="head"><h2>Weekly Schedule</h2><small>Sunday → Saturday</small></div>
+        <div class="content"><div class="weekGrid">${grid}</div></div>
+      </section>
+      <div class="actions">
+        <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
+        <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
+      </div>
+    `,
+  });
+}
+
+function basePage({ title, headerTitle, headerSubtitle, inner }) {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>YogaSix WNY • ${escapeHtml(heading)}</title>
+<title>${escapeHtml(title)}</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#67d5d2" />
 <style>
@@ -184,11 +294,11 @@ body{
   animation:bg 18s ease-in-out infinite alternate;
 }
 @keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
-.wrap{max-width:980px;margin:36px auto 72px;padding:0 16px}
+.wrap{max-width:1100px;margin:36px auto 72px;padding:0 16px}
 header{color:#fff;text-align:center;margin-bottom:18px}
-header h1{font-family:Montserrat,Inter,sans-serif;font-weight:800;font-size:clamp(26px,5vw,44px);margin:6px 0 2px;text-shadow:0 2px 14px rgba(0,0,0,.18)}
+header h1{font-family:Montserrat,Inter,sans-serif;font-weight:800;font-size:clamp(28px,5vw,46px);margin:6px 0 2px;text-shadow:0 2px 14px rgba(0,0,0,.18)}
 header p{margin:0;opacity:.95;font-weight:600}
-.panel{background:var(--panel);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(10px) saturate(140%);overflow:clip}
+.panel{background:var(--panel);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(10px) saturate(140%);overflow:clip;margin-top:18px}
 .head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px dashed rgba(0,0,0,.08)}
 .head h2{margin:0;font-weight:800;font-size:18px}
 .content{padding:12px 14px 16px}
@@ -205,7 +315,18 @@ header p{margin:0;opacity:.95;font-weight:600}
 }
 .titleLine{font-weight:700;color:#0a1424}
 .empty{padding:24px;text-align:center;color:#6b7a89}
-.actions{margin:14px auto 8px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+.weekGrid{display:grid; gap:16px; grid-template-columns:1fr}
+@media(min-width:820px){ .weekGrid{ grid-template-columns:1fr 1fr } }
+@media(min-width:1120px){ .weekGrid{ grid-template-columns:1fr 1fr 1fr } }
+
+.dayCard{background:var(--panel); border:1px solid rgba(15,23,42,.08); border-radius:20px; box-shadow:var(--shadow)}
+.dayHead{display:flex; align-items:baseline; gap:10px; padding:14px 16px 8px; border-bottom:1px dashed rgba(15,23,42,.08)}
+.dayName{font-weight:800}
+.dayDate{color:var(--muted); font-weight:700}
+.dayBody{padding:12px 16px 16px}
+
+.actions{margin:16px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .btn{background:linear-gradient(135deg,var(--teal),var(--lav));color:#fff;text-decoration:none;border:0;border-radius:999px;padding:10px 14px;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.12)}
 .btn:hover{transform:translateY(-1px)}
 </style>
@@ -213,43 +334,93 @@ header p{margin:0;opacity:.95;font-weight:600}
 <body>
   <div class="wrap">
     <header>
-      <h1>YogaSix West New York</h1>
-      <p>${escapeHtml(heading)}</p>
+      <h1>${escapeHtml(headerTitle)}</h1>
+      <p>${escapeHtml(headerSubtitle)}</p>
     </header>
-
-    <div class="panel">
-      <div class="head">
-        <h2>Today's Classes</h2>
-        <small>Parsed from ClubReady Daily</small>
-      </div>
-      <div class="content">
-        <div class="list">
-          ${rows}
-        </div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
-      <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
-      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
-    </div>
+    ${inner}
   </div>
 </body>
 </html>`;
 }
 
 function rowHTML(c) {
-  // Class | Teacher — both bold, no duration/spots
-  const bits = [c.title, c.teacher].filter(Boolean).join(" | ");
+  // TIME | Class Title | Teacher  (title + teacher bold, no duration/spots)
+  const line = [c.title, c.teacher].filter(Boolean).join(" | ");
   return `<div class="row">
     <div class="time">${escapeHtml(c.time || "")}</div>
-    <div><div class="titleLine">${escapeHtml(bits)}</div></div>
+    <div><div class="titleLine">${escapeHtml(line)}</div></div>
   </div>`;
 }
 
-function escapeHtml(s="") {
-  return s.replace(/[&<>"']/g, m =>
-    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])
-  );
+/* =========================
+   UTILITIES
+   ========================= */
+
+function json(obj, status = 200) {
+  return new Response(JSON.stringify(obj, null, 2), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "access-control-allow-origin": "*",
+      "cache-control": "public, max-age=90",
+    },
+  });
+}
+
+function html(htmlString, status = 200) {
+  return new Response(htmlString, {
+    status,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "access-control-allow-origin": "*",
+      "cache-control": "public, max-age=90",
+    },
+  });
+}
+
+function headingFromDate(d) {
+  return d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+}
+
+function resolveRequestedDate(url) {
+  // Priority: date (YYYY-MM-DD) → Date (MM/DD/YYYY) → dayoffset → today
+  if (url.searchParams.has("date")) {
+    const d = new Date(url.searchParams.get("date"));
+    if (!isNaN(d)) return d;
+  }
+  if (url.searchParams.has("Date")) {
+    const d = new Date(url.searchParams.get("Date"));
+    if (!isNaN(d)) return d;
+  }
+  if (url.searchParams.has("dayoffset") || url.searchParams.has("offset")) {
+    const off = Number(url.searchParams.get("dayoffset") || url.searchParams.get("offset") || "0") || 0;
+    const d = new Date();
+    d.setDate(d.getDate() + off);
+    return d;
+  }
+  return new Date();
+}
+
+function fmtISO(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function fmtUS(d) {
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const y = d.getFullYear();
+  return `${m}/${day}/${y}`;
+}
+
+function dateAtMidnight(d) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+
+function escapeHtml(s = "") {
+  return s.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 }
