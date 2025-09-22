@@ -8,76 +8,67 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --teal:#67d5d2; --lav:#b497e7; --ink:#0f172a; --muted:#5b6b7d;
-    --bg: linear-gradient(135deg, var(--teal), var(--lav));
-    --card: #fff; --chip:#eef9f8; --text:#13212f;
-    --radius:18px; --shadow:0 10px 28px rgba(31,41,55,.16);
+    --teal:#67d5d2; --lav:#b497e7; --text:#13212f; --muted:#5b6b7d;
+    --chip:#eef9f8; --radius:18px; --shadow:0 10px 28px rgba(31,41,55,.16);
   }
   *{box-sizing:border-box}
-  html,body{margin:0; min-height:100%}
+  html,body{margin:0;min-height:100%}
   body{
-    font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--text);
-    background: var(--bg) fixed;
-    background-size: 200% 200%;
-    animation: bg 18s ease-in-out infinite alternate;
+    background:linear-gradient(135deg,var(--teal),var(--lav)) fixed;
+    background-size:200% 200%;
+    animation:bg 18s ease-in-out infinite alternate;
     overflow-x:hidden;
   }
   @keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
-  .wrap{max-width:1100px; margin:36px auto 72px; padding:0 16px}
-  header{color:#fff; text-align:center}
-  header h1{margin:.2rem 0 0; font-family:Montserrat; font-weight:800; font-size:clamp(28px,5vw,46px); text-shadow:0 2px 14px rgba(0,0,0,.15)}
-  header p{margin:.2rem 0 0; opacity:.96}
-
-  .actions{margin:16px auto 22px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
-  .btn{appearance:none;border:0;border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--teal),var(--lav));box-shadow:0 6px 16px rgba(0,0,0,.12)}
+  .wrap{max-width:1100px;margin:36px auto 72px;padding:0 16px}
+  header{color:#fff;text-align:center}
+  header h1{margin:.2rem 0;font-family:Montserrat;font-weight:800;font-size:clamp(28px,5vw,46px);text-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header p{margin:.2rem 0 0;opacity:.96}
+  .actions{margin:16px auto 22px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .btn{border:0;border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--teal),var(--lav));box-shadow:0 6px 16px rgba(0,0,0,.12)}
   .btn:hover{transform:translateY(-1px)}
+  .panel{background:rgba(255,255,255,.78);backdrop-filter:blur(10px) saturate(140%);border:1px solid rgba(255,255,255,.6);border-radius:22px;box-shadow:var(--shadow);margin-top:18px}
+  .panel .head{display:flex;align-items:center;gap:12px;padding:16px 18px}
+  .head h2{font-family:Montserrat;font-size:18px;margin:0}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;padding:10px 16px}
+  .chip{background:var(--chip);border:1px solid rgba(0,0,0,.06);color:#0b2840;border-radius:999px;padding:8px 12px;font-weight:600;cursor:pointer}
+  .chip.active{background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+  .grid{display:grid;gap:12px;grid-template-columns:1fr}
+  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+  @media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  .card{border-radius:var(--radius);padding:14px;position:relative;color:#fff;box-shadow:var(--shadow)}
+  .time{font-weight:800;font-family:Montserrat;letter-spacing:.02em;font-size:1.05rem}
+  .title{margin:.25rem 0 0;font-weight:700}
+  .meta{font-size:.85rem;margin:.2rem 0 0}
+  .pill{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.25);padding:4px 8px;border-radius:999px;font-size:.75rem;font-weight:700}
+  .empty{padding:22px;text-align:center;color:#6b7a89}
 
-  .panel{background:rgba(255,255,255,.78); backdrop-filter: blur(10px) saturate(140%); border:1px solid rgba(255,255,255,.6); border-radius:22px; box-shadow:var(--shadow); margin-top:18px}
-  .panel .head{display:flex; align-items:center; gap:12px; padding:16px 18px}
-  .head h2{font-family:Montserrat; font-size:18px; margin:0}
-  .head small{margin-left:auto; color:#5b6b7d}
+  /* class-type palettes */
+  .Hot{background:linear-gradient(135deg,#ff5f6d,#ffc371)}
+  .Restore{background:linear-gradient(135deg,#a1ffce,#faffd1);color:#222}
+  .Sculpt{background:linear-gradient(135deg,#43cea2,#185a9d)}
+  .TRX{background:linear-gradient(135deg,#f7971e,#ffd200);color:#222}
+  .Mix{background:linear-gradient(135deg,#8e2de2,#4a00e0)}
+  .Flow{background:linear-gradient(135deg,#56ccf2,#2f80ed)}
+  .Mobility{background:linear-gradient(135deg,#fbd3e9,#bb377d)}
+  .Power{background:linear-gradient(135deg,#ff9966,#ff5e62)}
+  .Y101{background:linear-gradient(135deg,#c9ffbf,#ffafbd);color:#222}
 
-  /* Day chips */
-  .chips{display:flex; gap:10px; flex-wrap:wrap; padding:10px 16px}
-  .chip{background:var(--chip); border:1px solid rgba(0,0,0,.06); color:#0b2840; border-radius:999px; padding:8px 12px; font-weight:600; cursor:pointer}
-  .chip.active{background:#fff; box-shadow:0 6px 16px rgba(0,0,0,.08)}
+  /* fallback iframe styling */
+  .fallback{padding:12px;background:rgba(255,255,255,.85);border-top:1px dashed rgba(0,0,0,.08)}
+  .fallback iframe{width:100%;height:1200px;border:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
 
-  /* Grid of class cards */
-  .grid{display:grid; gap:12px; grid-template-columns:1fr}
-  @media (min-width:720px){ .grid{ grid-template-columns:1fr 1fr } }
-  @media (min-width:1024px){ .grid{ grid-template-columns:1fr 1fr 1fr } }
-
-  .card{
-    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 14px 12px; position:relative;
-    border:1px solid rgba(0,0,0,.06);
-  }
-  .time{font-weight:800; font-family:Montserrat; letter-spacing:.02em}
-  .title{margin:.25rem 0 0; font-weight:700}
-  .meta{color:var(--muted); font-size:.9rem; margin:.2rem 0 0}
-  .pill{position:absolute; top:10px; right:10px; background:#eef4ff; color:#293b6b; font-weight:700; font-size:.72rem; padding:4px 8px; border-radius:999px; border:1px solid rgba(41,59,107,.15)}
-  .empty{padding:22px; text-align:center; color:#6b7a89}
-
-  /* Sparkles/flowers background */
-  .floaters{position:fixed; inset:0; pointer-events:none}
-  .f{position:absolute; opacity:.22; animation:rise var(--t) linear infinite; font-size:var(--fs,22px)}
-  @keyframes rise{0%{transform:translateY(105vh) translateX(var(--sx,0))}100%{transform:translateY(-10vh) translateX(var(--ex,0))}}
+  /* tiny debug bar (toggle on/off by changing display) */
+  .debug{display:none;position:fixed;bottom:10px;left:10px;background:#111;color:#fff;font-size:12px;padding:8px 10px;border-radius:10px;opacity:.85;z-index:9999}
 </style>
 </head>
 <body>
-  <!-- sparkles + flowers -->
-  <div class="floaters" aria-hidden="true">
-    <div class="f" style="left:8%;  --t:36s; --fs:22px; --sx:-10px; --ex: 12px;">✨</div>
-    <div class="f" style="left:24%; --t:30s; --fs:28px; --sx:  0px; --ex:-10px;">🌸</div>
-    <div class="f" style="left:46%; --t:34s; --fs:22px; --sx: 10px; --ex:-20px;">✨</div>
-    <div class="f" style="left:66%; --t:28s; --fs:30px; --sx: -8px; --ex:  8px;">🌺</div>
-    <div class="f" style="left:84%; --t:40s; --fs:24px; --sx: 12px; --ex:-12px;">✨</div>
-  </div>
-
   <div class="wrap">
     <header>
       <h1>Live Class Schedule</h1>
-      <p>Updated automatically via ClubReady • Pretty mobile view</p>
+      <p>Auto-updated from ClubReady • Mobile-friendly</p>
     </header>
 
     <div class="actions">
@@ -88,52 +79,105 @@
 
     <!-- DAILY -->
     <section class="panel" id="daily">
-      <div class="head"><h2>Today</h2><small>Auto-updated</small></div>
-      <div class="chips" id="dailyChips"></div>
+      <div class="head"><h2>Today</h2></div>
       <div class="grid" id="dailyGrid"><div class="empty">Loading…</div></div>
     </section>
 
     <!-- WEEKLY -->
     <section class="panel" id="weekly">
-      <div class="head"><h2>This Week</h2><small>7-day view</small></div>
+      <div class="head"><h2>This Week</h2></div>
       <div class="chips" id="weekChips"></div>
       <div class="grid" id="weekGrid"><div class="empty">Loading…</div></div>
+
+      <!-- Beautiful fallback just in case -->
+      <div id="weeklyFallback" class="fallback" style="display:none">
+        <iframe title="Weekly schedule (fallback)"
+          src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33"></iframe>
+      </div>
     </section>
   </div>
 
-<script>
-/* ========= CONFIG ========= */
-const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
-/* ========================= */
+  <div class="debug" id="dbg">debug: ok</div>
 
+<script>
+const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
 const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const timeRe = /(\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i;
+const dbg = (msg)=>{ const el=document.getElementById('dbg'); el.textContent = 'debug: ' + msg; /* set .debug display:block to view */ };
 
-function bySel(root, sel){ return [...root.querySelectorAll(sel)] }
-function clean(t){ return (t||"").replace(/\s+/g," ").trim() }
+// class-type mapping
+const typeMap = [
+  {key:/\bhot\b/i, cls:"Hot", emoji:"🔥"},
+  {key:/restore/i, cls:"Restore", emoji:"🌙"},
+  {key:/sculpt/i, cls:"Sculpt", emoji:"💪"},
+  {key:/trx/i, cls:"TRX", emoji:"🏋️"},
+  {key:/mix|six|blend/i, cls:"Mix", emoji:"🎨"},
+  {key:/flow/i, cls:"Flow", emoji:"🌊"},
+  {key:/mobility|stretch/i, cls:"Mobility", emoji:"🤸"},
+  {key:/power/i, cls:"Power", emoji:"⚡"},
+  {key:/101|intro/i, cls:"Y101", emoji:"📘"}
+];
+
+function clean(t){ return (t||"").replace(/\u00A0/g,' ').replace(/\s+/g,' ').trim() }
+function textOf(node){ return clean(node?.innerText || node?.textContent || "") }
+
+// ---------- Parsers (multi-strategy) ----------
+
+// Strategy A: table columns (common weekly layout)
+function parseWeekByColumns(doc){
+  const tds = [...doc.querySelectorAll("td")];
+  const cols = tds
+    .map(td => textOf(td))
+    .filter(txt => timeRe.test(txt))
+    .map(txt => txt.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i));
+  if(cols.length < 5) return null; // likely not the right structure
+  const week = {};
+  cols.slice(0,7).forEach((arr,i)=> week[dayNames[i]] = parseLinesToClasses(arr));
+  return week;
+}
+
+// Strategy B: split by explicit day headings in text
+function parseWeekByHeadings(doc){
+  const all = textOf(doc.body);
+  const dayRe = /(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/ig;
+  const indices = [];
+  let m;
+  while((m = dayRe.exec(all))){ indices.push({day: m[0], idx: m.index}); }
+  if(indices.length < 5) return null;
+  const week = {};
+  for(let i=0;i<indices.length;i++){
+    const start = indices[i].idx;
+    const end = (i+1<indices.length) ? indices[i+1].idx : all.length;
+    const chunk = all.slice(start, end);
+    const lines = chunk.replace(new RegExp(indices[i].day,'i'),'').split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i);
+    week[indices[i].day] = parseLinesToClasses(lines);
+  }
+  return week;
+}
+
+// Strategy C: generic blocks (fallback)
+function parseWeekGeneric(doc){
+  const text = textOf(doc.body);
+  const blocks = text.split(/(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/i).filter(Boolean);
+  if(blocks.length < 2) return null;
+  const week = {};
+  for(let i=0;i<7;i++){
+    week[dayNames[i]] = parseLinesToClasses( (blocks[i] || "").split(/\n|·|\u2022|-/) );
+  }
+  return week;
+}
 
 function parseLinesToClasses(lines){
-  const out = [];
-  let current = null;
+  const out=[]; let current=null;
   for(const raw of lines){
-    const line = clean(raw);
-    if(!line) continue;
+    const line = clean(raw); if(!line) continue;
     const t = line.match(timeRe);
-    if(t){
-      if(current) out.push(current);
-      current = { time: t[1], title:"", duration:"", instructor:"", notes:"" };
-      continue;
-    }
+    if(t){ if(current) out.push(current); current = {time:t[1], title:"", duration:"", instructor:"", notes:""}; continue; }
     if(!current) continue;
-    if(/(mins?|minute|hour)/i.test(line) && !current.duration){
-      current.duration = line;
-    } else if(/(with|instructor)/i.test(line)) {
-      current.instructor = line.replace(/with/i,"").trim();
-    } else if(!current.title) {
-      current.title = line;
-    } else {
-      current.notes += (current.notes? " • " : "") + line;
-    }
+    if(/(mins?|minute|hour)/i.test(line) && !current.duration){ current.duration = line; }
+    else if(/(with|instructor)/i.test(line) && !current.instructor){ current.instructor = line.replace(/with/i,'').trim(); }
+    else if(!current.title){ current.title = line; }
+    else { current.notes += (current.notes ? " • " : "") + line; }
   }
   if(current) out.push(current);
   return out;
@@ -141,71 +185,84 @@ function parseLinesToClasses(lines){
 
 function extractWeek(html){
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const tds = bySel(doc, "td");
-  const columns = tds
-    .map(td => clean(td.innerText))
-    .filter(txt => /\d{1,2}:\d{2}\s?(AM|PM)/i.test(txt))
-    .map(txt => txt.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i));
-  const week = {};
-  columns.slice(0,7).forEach((arr, i) => {
-    const classes = parseLinesToClasses(arr);
-    week[dayNames[i]] = classes;
-  });
-  return week;
+  return parseWeekByColumns(doc) || parseWeekByHeadings(doc) || parseWeekGeneric(doc) || null;
 }
 
 function extractDay(html){
   const doc = new DOMParser().parseFromString(html, "text/html");
-  const text = clean(doc.body.innerText || "");
+  const text = textOf(doc.body);
   const blocks = text.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i);
   return parseLinesToClasses(blocks);
 }
 
-function renderChips(el, keys, onClick, activeKey){
-  el.innerHTML = "";
-  keys.forEach(k=>{
-    const b = document.createElement("button");
-    b.className = "chip" + (k===activeKey ? " active" : "");
-    b.textContent = k;
-    b.onclick = ()=> onClick(k);
-    el.appendChild(b);
-  });
+// ---------- Rendering ----------
+function getTypeInfo(title){
+  const t = title||"";
+  for(const m of typeMap){ if(m.key.test(t)) return m }
+  return {cls:"Flow", emoji:"🧘"}; // default vibe
 }
 function renderCards(el, classes){
   if(!classes || classes.length===0){ el.innerHTML = '<div class="empty">No classes found.</div>'; return; }
   el.innerHTML = "";
   classes.forEach(c=>{
+    const {cls,emoji} = getTypeInfo(c.title||"");
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "card " + cls;
     div.innerHTML = `
-      <div class="pill">${(c.duration||"")}</div>
-      <div class="time">${c.time||""}</div>
-      <div class="title">${c.title||""}</div>
-      <div class="meta">${(c.instructor||"").replace(/^with\s+/i,"") || ""}</div>
+      <div class="pill">${c.duration || ""}</div>
+      <div class="time">${c.time || ""}</div>
+      <div class="title">${emoji} ${c.title || ""}</div>
+      ${c.instructor ? `<div class="meta">${c.instructor}</div>` : ""}
       ${c.notes ? `<div class="meta">${c.notes}</div>` : ""}
     `;
     el.appendChild(div);
   });
 }
+function renderChips(el, keys, onClick, active){
+  el.innerHTML = "";
+  keys.forEach(k=>{
+    const b = document.createElement("button");
+    b.className = "chip" + (k===active?" active":"");
+    b.textContent = k;
+    b.onclick = ()=> onClick(k);
+    el.appendChild(b);
+  });
+}
 
+// ---------- Boot ----------
 (async function init(){
-  const weekHTML = await fetch(`${WORKER_BASE}/?which=weekly`).then(r=>r.text()).catch(()=>null);
-  if(weekHTML){
+  // WEEKLY
+  let weeklyOK = false;
+  try{
+    const weekHTML = await fetch(`${WORKER_BASE}/?which=weekly`, {cache:"no-store"}).then(r=>r.text());
     const week = extractWeek(weekHTML);
-    const weekKeys = Object.keys(week);
-    let wkActive = weekKeys[0] || "Monday";
-    renderChips(document.getElementById("weekChips"), weekKeys, (k)=>{ wkActive=k; renderCards(document.getElementById("weekGrid"), week[k]); }, wkActive);
-    renderCards(document.getElementById("weekGrid"), week[wkActive]);
-  } else {
-    document.getElementById("weekGrid").innerHTML = '<div class="empty">Couldn’t load weekly schedule.</div>';
+    if(week){
+      const keys = Object.keys(week).filter(k=>week[k] && week[k].length);
+      if(keys.length){
+        weeklyOK = true;
+        let active = keys[0];
+        renderChips(document.getElementById("weekChips"), keys, (k)=>{ active=k; renderCards(document.getElementById("weekGrid"), week[k]); }, active);
+        renderCards(document.getElementById("weekGrid"), week[active]);
+      }
+    }
+  }catch(e){ dbg('weekly fetch/parsing error'); }
+
+  if(!weeklyOK){
+    // show fallback iframe so page is never empty
+    document.getElementById('weeklyFallback').style.display = 'block';
+    document.getElementById('weekGrid').innerHTML = '<div class="empty">Showing original weekly view below…</div>';
   }
 
-  const dayHTML = await fetch(`${WORKER_BASE}/?which=daily`).then(r=>r.text()).catch(()=>null);
-  if(dayHTML){
+  // DAILY
+  try{
+    const dayHTML = await fetch(`${WORKER_BASE}/?which=daily`, {cache:"no-store"}).then(r=>r.text());
     const classes = extractDay(dayHTML);
-    renderChips(document.getElementById("dailyChips"), ["Today"], ()=>{}, "Today");
-    renderCards(document.getElementById("dailyGrid"), classes);
-  } else {
+    if(classes && classes.length){
+      renderCards(document.getElementById("dailyGrid"), classes);
+    } else {
+      document.getElementById("dailyGrid").innerHTML = '<div class="empty">No classes today.</div>';
+    }
+  }catch(e){
     document.getElementById("dailyGrid").innerHTML = '<div class="empty">Couldn’t load today’s classes.</div>';
   }
 })();
