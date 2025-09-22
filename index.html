@@ -1,426 +1,114 @@
-export default {
-  async fetch(req) {
-    const url = new URL(req.url);
-    const path = url.pathname;
-
-    // CORS preflight (kept permissive so you can embed later if you want)
-    if (req.method === "OPTIONS") {
-      return new Response(null, {
-        headers: {
-          "access-control-allow-origin": "*",
-          "access-control-allow-methods": "GET,HEAD,OPTIONS",
-          "access-control-allow-headers": "Content-Type, *",
-          "access-control-max-age": "86400",
-        },
-      });
-    }
-
-    // Routes
-    if (path === "/json") {
-      const { classes, heading } = await fetchDailyParsed(url);
-      return json({ ok: true, heading, classes });
-    }
-
-    if (path === "/week.json") {
-      const { weekStart, days } = await fetchWeekParsed(url);
-      return json({ ok: true, weekStart, days });
-    }
-
-    if (path === "/week") {
-      const { weekStart, days } = await fetchWeekParsed(url);
-      const page = renderWeekPage({ weekStart, days });
-      return html(page);
-    }
-
-    // Default: pretty Daily HTML
-    const { classes, heading } = await fetchDailyParsed(url);
-    const page = renderDailyPage({ heading, classes });
-    return html(page);
-  },
-};
-
-/* =========================
-   DATA FETCH + PARSING
-   ========================= */
-
-const DAILY_BASE =
-  "https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F";
-
-// Build an upstream URL for a specific day.
-// We send multiple param styles; ClubReady will use what it recognizes.
-function buildDailyURLFor(dateObj, sourceURL) {
-  const u = new URL(DAILY_BASE);
-  // Prefer explicit parameters from the caller (sourceURL) if present:
-  // We preserve any given date-like param for single-day requests
-  const src = sourceURL;
-  const hasAny =
-    src.searchParams.has("date") ||
-    src.searchParams.has("Date") ||
-    src.searchParams.has("d") ||
-    src.searchParams.has("day") ||
-    src.searchParams.has("offset") ||
-    src.searchParams.has("dayoffset");
-
-  if (hasAny) {
-    for (const k of ["date", "Date", "d", "day", "offset", "dayoffset"]) {
-      if (src.searchParams.has(k)) u.searchParams.set(k, src.searchParams.get(k));
-    }
-  }
-
-  // Also attach normalized versions to maximize compatibility
-  const iso = fmtISO(dateObj); // YYYY-MM-DD
-  const us = fmtUS(dateObj);   // MM/DD/YYYY
-  const dayOffset = Math.round((dateAtMidnight(dateObj) - dateAtMidnight(new Date())) / 86400000);
-
-  u.searchParams.set("date", iso);
-  u.searchParams.set("Date", us);
-  u.searchParams.set("d", us);
-  u.searchParams.set("day", us);
-  u.searchParams.set("dayoffset", String(dayOffset));
-  u.searchParams.set("offset", String(dayOffset));
-
-  return u.toString();
-}
-
-async function fetchDailyParsed(sourceURL) {
-  const url = sourceURL instanceof URL ? sourceURL : new URL(sourceURL);
-  // Figure out which date they asked for; default = today
-  const d = resolveRequestedDate(url);
-  const target = buildDailyURLFor(d, url);
-
-  let upstreamHtml;
-  try {
-    const r = await fetch(target, {
-      headers: { "User-Agent": "Mozilla/5.0 (YogaSix Pretty Worker)" },
-      cf: { cacheEverything: true, cacheTtl: 120 },
-    });
-    upstreamHtml = await r.text();
-  } catch (e) {
-    return { heading: headingFromDate(d), classes: [] };
-  }
-
-  const sanitized = upstreamHtml
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
-    .replace(/\son\w+="[^"]*"/gi, "")
-    .replace(/\son\w+='[^']*'/gi, "");
-
-  const text = htmlToText(sanitized);
-  const classes = parseDailyFromText(text);
-  return { heading: headingFromDate(d), classes };
-}
-
-async function fetchWeekParsed(sourceURL) {
-  const url = sourceURL instanceof URL ? sourceURL : new URL(sourceURL);
-  // Start of week = Sunday (0)
-  const today = new Date();
-  const sunday = new Date(today);
-  sunday.setHours(0, 0, 0, 0);
-  sunday.setDate(today.getDate() - today.getDay()); // back to Sunday
-
-  // Fetch 7 days in parallel
-  const tasks = Array.from({ length: 7 }, (_, i) => {
-    const di = new Date(sunday);
-    di.setDate(sunday.getDate() + i);
-    const target = buildDailyURLFor(di, url);
-    return (async () => {
-      try {
-        const r = await fetch(target, {
-          headers: { "User-Agent": "Mozilla/5.0 (YogaSix Pretty Worker)" },
-          cf: { cacheEverything: true, cacheTtl: 120 },
-        });
-        const html = await r.text();
-        const sanitized = html
-          .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
-          .replace(/\son\w+="[^"]*"/gi, "")
-          .replace(/\son\w+='[^']*'/gi, "");
-        const text = htmlToText(sanitized);
-        const classes = parseDailyFromText(text);
-        return { date: di, classes };
-      } catch {
-        return { date: di, classes: [] };
-      }
-    })();
-  });
-
-  const results = await Promise.all(tasks);
-  const days = results.map(({ date, classes }) => ({
-    key: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][date.getDay()],
-    dateISO: fmtISO(date),
-    datePretty: headingFromDate(date),
-    classes,
-  }));
-
-  return { weekStart: fmtISO(sunday), days };
-}
-
-/* =========================
-   PARSER
-   ========================= */
-
-// Turn HTML to readable text
-function htmlToText(html) {
-  return html
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]+>/g, " ")        // strip all tags
-    .replace(/&nbsp;|&#160;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/\u00A0/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function parseDailyFromText(txt) {
-  const out = [];
-  const timePattern = "(?:1[0-2]|0?[1-9]):[0-5][0-9]\\s?(?:AM|PM)";
-  const re = new RegExp(`(${timePattern})([\\s\\S]*?)(?=${timePattern}|$)`, "gi");
-  let m;
-  while ((m = re.exec(txt)) !== null) {
-    const time = clean(m[1]);
-    const chunk = clean(m[2]);
-    if (!time) continue;
-
-    // Tokenize chunk
-    const parts = chunk
-      .split(/(?:\r?\n)|·|\u2022|\s-\s|;|,\s/)
-      .map(clean)
-      .filter(Boolean)
-      .slice(0, 8);
-
-    let title = "", teacher = "";
-    for (const p of parts) {
-      // Skip durations and capacities
-      if (/(?:mins?|minute|hour)/i.test(p)) continue;
-      if (/\bspaces?\b|\boccupied\b/i.test(p)) continue;
-
-      if (!title) { title = p; continue; }
-
-      // Detect name-like patterns: "Ava", "Ava M", "Ava Marie"
-      if (!teacher && /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s*[A-Z]\.?)?$/.test(p)) {
-        teacher = p;
-        break;
-      }
-    }
-    out.push({ time, title, teacher });
-  }
-  return out;
-}
-
-function clean(s) { return (s || "").replace(/\u00A0/g, " ").replace(/\s+/g, " ").trim(); }
-
-/* =========================
-   RENDERING (HTML)
-   ========================= */
-
-function renderDailyPage({ heading, classes }) {
-  const rows = classes.length
-    ? classes.map(rowHTML).join("")
-    : `<div class="empty">No classes found.</div>`;
-
-  return basePage({
-    title: `Daily • ${heading}`,
-    headerTitle: "YogaSix West New York",
-    headerSubtitle: heading,
-    inner: `
-      <section class="panel">
-        <div class="head"><h2>Today's Classes</h2><small>Parsed from ClubReady</small></div>
-        <div class="content"><div class="list">${rows}</div></div>
-      </section>
-      <div class="actions">
-        <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
-        <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
-        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
-      </div>
-    `,
-  });
-}
-
-function renderWeekPage({ weekStart, days }) {
-  const grid = days.map(d => {
-    const rows = d.classes.length
-      ? d.classes.map(rowHTML).join("")
-      : `<div class="empty">No classes</div>`;
-    return `
-      <div class="dayCard">
-        <div class="dayHead"><div class="dayName">${escapeHtml(d.key)}</div><div class="dayDate">${escapeHtml(d.datePretty)}</div></div>
-        <div class="dayBody"><div class="list">${rows}</div></div>
-      </div>
-    `;
-  }).join("");
-
-  return basePage({
-    title: `This Week • starting ${weekStart}`,
-    headerTitle: "YogaSix West New York",
-    headerSubtitle: "This Week",
-    inner: `
-      <section class="panel">
-        <div class="head"><h2>Weekly Schedule</h2><small>Sunday → Saturday</small></div>
-        <div class="content"><div class="weekGrid">${grid}</div></div>
-      </section>
-      <div class="actions">
-        <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
-        <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
-        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
-      </div>
-    `,
-  });
-}
-
-function basePage({ title, headerTitle, headerSubtitle, inner }) {
-  return `<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>${escapeHtml(title)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
-<meta name="theme-color" content="#67d5d2" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YogaSix WNY • Live Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --teal:#67d5d2; --lav:#b497e7;
-  --ink:#0f172a; --muted:#64748b;
-  --panel:rgba(255,255,255,.92); --pill:#f6f9fc;
-  --radius:18px; --shadow:0 12px 28px rgba(15,23,42,.18);
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
-body{
-  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--ink);
-  background:linear-gradient(135deg,var(--teal),var(--lav)) fixed;
-  background-size:200% 200%;
-  animation:bg 18s ease-in-out infinite alternate;
-}
-@keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
-.wrap{max-width:1100px;margin:36px auto 72px;padding:0 16px}
-header{color:#fff;text-align:center;margin-bottom:18px}
-header h1{font-family:Montserrat,Inter,sans-serif;font-weight:800;font-size:clamp(28px,5vw,46px);margin:6px 0 2px;text-shadow:0 2px 14px rgba(0,0,0,.18)}
-header p{margin:0;opacity:.95;font-weight:600}
-.panel{background:var(--panel);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(10px) saturate(140%);overflow:clip;margin-top:18px}
-.head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px dashed rgba(0,0,0,.08)}
-.head h2{margin:0;font-weight:800;font-size:18px}
-.content{padding:12px 14px 16px}
-.list{display:flex;flex-direction:column;gap:12px}
-.row{
-  display:grid; grid-template-columns:110px 1fr; gap:14px;
-  background:var(--pill); border:1px solid rgba(15,23,42,.06);
-  border-radius:16px; padding:12px 14px; align-items:center;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
-}
-.time{
-  font-weight:800; letter-spacing:.02em; color:#0b2742;
-  background:#fff; border:1px solid rgba(15,23,42,.06); border-radius:999px; padding:8px 10px; text-align:center;
-}
-.titleLine{font-weight:700;color:#0a1424}
-.empty{padding:24px;text-align:center;color:#6b7a89}
+  :root {
+    --teal: #67d5d2; --lav: #b497e7; --ink:#0f172a;
+    --panel: rgba(255,255,255,.82);
+    --shadow: 0 12px 28px rgba(15,23,42,.15);
+    --radius: 20px;
+  }
+  body {
+    font-family: Inter, sans-serif;
+    margin:0;
+    background: linear-gradient(135deg,var(--teal),var(--lav));
+    background-size: 200% 200%;
+    animation: bg 18s ease-in-out infinite alternate;
+    color: var(--ink);
+  }
+  @keyframes bg {0%{background-position:0% 20%}100%{background-position:100% 80%}}
+  .wrap {max-width:1100px;margin:36px auto 72px;padding:0 16px}
+  header {color:#fff;text-align:center;margin-bottom:24px}
+  header h1 {font-weight:800;font-size:clamp(28px,5vw,44px);margin:0;text-shadow:0 2px 14px rgba(0,0,0,.16)}
+  header p {margin:6px 0 0;opacity:.9;font-weight:600}
 
-.weekGrid{display:grid; gap:16px; grid-template-columns:1fr}
-@media(min-width:820px){ .weekGrid{ grid-template-columns:1fr 1fr } }
-@media(min-width:1120px){ .weekGrid{ grid-template-columns:1fr 1fr 1fr } }
+  .panel {background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);margin:24px 0;overflow:hidden;backdrop-filter: blur(8px)}
+  .panel .head {display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid rgba(0,0,0,.08)}
+  .head h2 {margin:0;font-size:18px;font-weight:700}
+  .head small {opacity:.7}
 
-.dayCard{background:var(--panel); border:1px solid rgba(15,23,42,.08); border-radius:20px; box-shadow:var(--shadow)}
-.dayHead{display:flex; align-items:baseline; gap:10px; padding:14px 16px 8px; border-bottom:1px dashed rgba(15,23,42,.08)}
-.dayName{font-weight:800}
-.dayDate{color:var(--muted); font-weight:700}
-.dayBody{padding:12px 16px 16px}
+  .class-list {padding:14px 18px}
+  .row {display:flex;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(0,0,0,.07)}
+  .row:last-child {border-bottom:0}
+  .time {font-weight:700;background:#fff;border-radius:999px;padding:4px 10px;margin-right:14px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  .info {flex:1}
+  .title {font-weight:700;margin:0}
+  .teacher {margin:2px 0 0;font-size:14px;opacity:.8}
 
-.actions{margin:16px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.btn{background:linear-gradient(135deg,var(--teal),var(--lav));color:#fff;text-decoration:none;border:0;border-radius:999px;padding:10px 14px;font-weight:700;box-shadow:0 8px 18px rgba(0,0,0,.12)}
-.btn:hover{transform:translateY(-1px)}
+  .week-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;padding:18px}
+  .day {background:#fff;border-radius:var(--radius);padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .day h3 {margin:0 0 8px;font-size:16px;font-weight:700}
+  .day .row {border-bottom:0;padding:8px 0}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>${escapeHtml(headerTitle)}</h1>
-      <p>${escapeHtml(headerSubtitle)}</p>
-    </header>
-    ${inner}
+<div class="wrap">
+  <header>
+    <h1>Live Class Schedule</h1>
+    <p>YogaSix West New York • Auto-updated from ClubReady</p>
+  </header>
+
+  <!-- Daily -->
+  <div class="panel" id="daily">
+    <div class="head"><h2>Today's Classes</h2><small>Auto-updated</small></div>
+    <div class="class-list" id="daily-list">Loading…</div>
   </div>
+
+  <!-- Weekly -->
+  <div class="panel" id="weekly">
+    <div class="head"><h2>This Week</h2><small>Sunday → Saturday</small></div>
+    <div class="week-grid" id="week-grid">Loading…</div>
+  </div>
+</div>
+
+<script>
+const WORKER = "https://yogasix-schedule.kate-espinal.workers.dev";
+
+// Render helpers
+function renderRow(cls){
+  return `
+    <div class="row">
+      <div class="time">${cls.time}</div>
+      <div class="info">
+        <p class="title">${cls.title}</p>
+        <p class="teacher">${cls.teacher||""}</p>
+      </div>
+    </div>`;
+}
+
+// Daily fetch
+async function loadDaily(){
+  try{
+    const res = await fetch(WORKER+"/json");
+    const data = await res.json();
+    const list = document.getElementById("daily-list");
+    if(data.classes && data.classes.length){
+      list.innerHTML = data.classes.map(renderRow).join("");
+    } else {
+      list.innerHTML = "<p>No classes today.</p>";
+    }
+  }catch(e){console.error(e);}
+}
+
+// Weekly fetch
+async function loadWeek(){
+  try{
+    const res = await fetch(WORKER+"/week.json");
+    const data = await res.json();
+    const grid = document.getElementById("week-grid");
+    grid.innerHTML = data.days.map(d=>{
+      let rows = d.classes.length ? d.classes.map(renderRow).join("") : "<p>No classes</p>";
+      return `<div class="day"><h3>${d.key} ${d.datePretty}</h3>${rows}</div>`;
+    }).join("");
+  }catch(e){console.error(e);}
+}
+
+loadDaily();
+loadWeek();
+</script>
 </body>
-</html>`;
-}
-
-function rowHTML(c) {
-  // TIME | Class Title | Teacher  (title + teacher bold, no duration/spots)
-  const line = [c.title, c.teacher].filter(Boolean).join(" | ");
-  return `<div class="row">
-    <div class="time">${escapeHtml(c.time || "")}</div>
-    <div><div class="titleLine">${escapeHtml(line)}</div></div>
-  </div>`;
-}
-
-/* =========================
-   UTILITIES
-   ========================= */
-
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj, null, 2), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=90",
-    },
-  });
-}
-
-function html(htmlString, status = 200) {
-  return new Response(htmlString, {
-    status,
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "access-control-allow-origin": "*",
-      "cache-control": "public, max-age=90",
-    },
-  });
-}
-
-function headingFromDate(d) {
-  return d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
-}
-
-function resolveRequestedDate(url) {
-  // Priority: date (YYYY-MM-DD) → Date (MM/DD/YYYY) → dayoffset → today
-  if (url.searchParams.has("date")) {
-    const d = new Date(url.searchParams.get("date"));
-    if (!isNaN(d)) return d;
-  }
-  if (url.searchParams.has("Date")) {
-    const d = new Date(url.searchParams.get("Date"));
-    if (!isNaN(d)) return d;
-  }
-  if (url.searchParams.has("dayoffset") || url.searchParams.has("offset")) {
-    const off = Number(url.searchParams.get("dayoffset") || url.searchParams.get("offset") || "0") || 0;
-    const d = new Date();
-    d.setDate(d.getDate() + off);
-    return d;
-  }
-  return new Date();
-}
-
-function fmtISO(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-function fmtUS(d) {
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  const y = d.getFullYear();
-  return `${m}/${day}/${y}`;
-}
-
-function dateAtMidnight(d) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
-function escapeHtml(s = "") {
-  return s.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
-}
+</html>
