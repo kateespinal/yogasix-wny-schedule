@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>YogaSix West New York • Live Class Schedule</title>
-  <meta name="description" content="YogaSix West New York — today’s classes and full class schedule, updated in real time via ClubReady." />
+  <meta name="description" content="YogaSix West New York — today’s classes and full weekly schedule, updated in real time via ClubReady." />
   <meta name="theme-color" content="#67d5d2" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -12,7 +12,7 @@
       --teal:#67d5d2; --lav:#b497e7; --text:#1f2937; --muted:#64748b;
       --card: rgba(255,255,255,0.82); --ring: rgba(103,213,210,0.35);
       --shadow: 0 14px 34px rgba(61, 90, 128, 0.18);
-      --radius: 22px; --radius-sm: 14px; --maxw:1200px;
+      --radius: 22px; --radius-sm: 14px; --maxw:1100px;
     }
     *{box-sizing:border-box}
     html,body{margin:0;height:100%}
@@ -31,7 +31,7 @@
 
     /* floating yoga motifs */
     .floaters{position:fixed; inset:0; pointer-events:none; overflow:hidden}
-    .floater{position:absolute; opacity:.22; filter:blur(.2px); animation:drift var(--t) linear infinite; font-size:var(--fs,22px)}
+    .floater{position:absolute; opacity:.22; filter:blur(.2px); animation:drift var(--t) linear infinite; font-size:var(--fs,24px)}
     @keyframes drift{0%{transform:translateY(110vh) translateX(var(--sx,0))}100%{transform:translateY(-15vh) translateX(var(--ex,0))}}
 
     .wrap{max-width:var(--maxw); margin:40px auto 64px; padding:0 20px}
@@ -40,14 +40,9 @@
     h1{margin:0;font-family:Montserrat, Poppins, sans-serif;font-weight:800;font-size:clamp(28px,5vw,48px);line-height:1.05;text-shadow:0 2px 16px rgba(0,0,0,.18)}
     p.sub{margin:2px 0 0;color:#f8fafc;opacity:.96;font-size:clamp(14px,1.8vw,18px)}
 
-    /* quick actions only (removed view toggles) */
     .quick{margin:18px auto 22px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
     .btn{appearance:none;border:0;border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--teal),var(--lav));box-shadow:0 6px 16px rgba(0,0,0,.12);transition:transform .08s ease, box-shadow .2s ease}
     .btn:hover{transform:translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,.16)}
-
-    /* panels grid */
-    .panels{display:grid; gap:22px; grid-template-columns:1fr}
-    @media (min-width:980px){ .panels{grid-template-columns:1fr 1fr} }
 
     .panel{
       background:var(--card);
@@ -57,24 +52,21 @@
       border-radius:var(--radius);
       box-shadow:var(--shadow);
       backdrop-filter:saturate(140%) blur(10px);
-      overflow:clip; display:flex; flex-direction:column;
+      overflow:clip; display:flex; flex-direction:column; margin-top:22px;
     }
     .panelHead{display:flex; align-items:center; gap:12px; padding:18px 18px 10px}
     .lotus{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #fff, var(--teal));box-shadow:0 0 0 6px var(--ring)}
     .panelTitle{font-family:Montserrat, Poppins, sans-serif;font-weight:700;font-size:18px;margin:0}
     .panelSub{margin-left:auto;color:var(--muted);font-size:13px}
-    .panelBar{display:flex; gap:10px; padding:0 16px 12px; flex-wrap:wrap}
-    .mini{appearance:none;border:0;background:rgba(255,255,255,.75);color:#0b2840;border-radius:999px;padding:8px 12px;font-weight:600;font-size:12.5px;cursor:pointer;transition:all .15s ease;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-    .mini:hover{background:#fff}
-    .iframeWrap{padding:12px;background:rgba(255,255,255,.78);border-top:1px dashed rgba(0,0,0,.06);flex:1;display:flex}
 
-    /* different heights to fit full weekly grid better */
+    .iframeWrap{padding:12px;background:rgba(255,255,255,.78);border-top:1px dashed rgba(0,0,0,.06);flex:1;display:flex}
     iframe.frame{width:100%; border:0; border-radius:var(--radius-sm); background:#fff; box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-    iframe.frame.daily{height:min(1200px,76vh)}
-    iframe.frame.full{height:1200px}          /* Taller so weekly view shows fully */
-    @media (max-width:980px){
-      iframe.frame.daily{height:70vh}
-      iframe.frame.full{height:1200px}
+    /* Daily = smaller; Weekly = tall so all 7 days show */
+    iframe.frame.daily{height:520px}
+    iframe.frame.full{height:1600px}
+    @media (max-width:700px){
+      iframe.frame.daily{height:460px}
+      iframe.frame.full{height:1600px}
     }
 
     .note{padding:10px 16px 16px; font-size:12.5px; color:var(--muted); text-align:center}
@@ -82,13 +74,13 @@
   </style>
 </head>
 <body>
-  <!-- floating yoga motifs -->
+  <!-- yoga-themed floaters -->
   <div class="floaters" aria-hidden="true">
-    <div class="floater" style="left:6%; --t:36s; --fs:26px; --sx:-10px; --ex:20px;">🪷</div>
-    <div class="floater" style="left:22%; --t:30s; --fs:22px; --sx:0px; --ex:-10px;">✨</div>
-    <div class="floater" style="left:42%; --t:34s; --fs:24px; --sx:10px; --ex:-20px;">🧘‍♀️</div>
-    <div class="floater" style="left:65%; --t:28s; --fs:20px; --sx:-8px; --ex:8px;">🪷</div>
-    <div class="floater" style="left:82%; --t:40s; --fs:24px; --sx:12px; --ex:-12px;">✨</div>
+    <div class="floater" style="left:6%;  --t:36s; --fs:26px; --sx:-10px; --ex:20px;">🧘‍♀️</div>
+    <div class="floater" style="left:22%; --t:30s; --fs:24px; --sx:0px;  --ex:-10px;">🪷</div>
+    <div class="floater" style="left:44%; --t:34s; --fs:24px; --sx:10px; --ex:-20px;">🕉️</div>
+    <div class="floater" style="left:66%; --t:28s; --fs:22px; --sx:-8px; --ex:8px;">🧘</div>
+    <div class="floater" style="left:84%; --t:40s; --fs:26px; --sx:12px; --ex:-12px;">🧘‍♂️</div>
   </div>
 
   <div class="wrap">
@@ -98,54 +90,42 @@
       <p class="sub">Updated automatically via ClubReady • Find your flow, daily.</p>
     </header>
 
-    <!-- Quick actions only -->
     <div class="quick">
       <a class="btn" href="https://members.yogasix.com/buy/yogasix-west-new-york" target="_blank" rel="noopener">Book Intro Offer</a>
       <a class="btn" href="tel:+12013615299">Call (201) 361-5299</a>
-      <a class="btn" href="https://maps.app.goo.gl/5Wf9Ed3k2iQ6Fj3Q8" target="_blank" rel="noopener">Get Directions</a>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
     </div>
 
-    <!-- Panels -->
-    <section class="panels" aria-label="Schedules">
-      <!-- Daily -->
-      <article class="panel" aria-label="Today’s classes">
-        <div class="panelHead">
-          <span class="lotus" aria-hidden="true"></span>
-          <h2 class="panelTitle">Today’s Classes</h2>
-          <div class="panelSub">Auto-updated daily</div>
-        </div>
-        <div class="panelBar">
-          <button class="mini" onclick="window.open('https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F','_blank','noopener')">Open in new tab</button>
-        </div>
-        <div class="iframeWrap">
-          <iframe
-            class="frame daily"
-            title="YogaSix Daily Schedule"
-            src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F">
-          </iframe>
-        </div>
-        <div class="note">Tip: Tap a class for details and to book via ClubReady.</div>
-      </article>
+    <!-- Daily (smaller) -->
+    <section class="panel" aria-label="Today’s classes">
+      <div class="panelHead">
+        <span class="lotus" aria-hidden="true"></span>
+        <h2 class="panelTitle">Today’s Classes</h2>
+        <div class="panelSub">Auto-updated daily</div>
+      </div>
+      <div class="iframeWrap">
+        <iframe
+          class="frame daily"
+          title="YogaSix Daily Schedule"
+          src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=6101B4BCC5283B3D9E295AEA56C394B35FD608B3CA5D321F">
+        </iframe>
+      </div>
+    </section>
 
-      <!-- Full weekly -->
-      <article class="panel" aria-label="Full class schedule">
-        <div class="panelHead">
-          <span class="lotus" aria-hidden="true"></span>
-          <h2 class="panelTitle">Full Class Schedule</h2>
-          <div class="panelSub">Browse all upcoming classes</div>
-        </div>
-        <div class="panelBar">
-          <button class="mini" onclick="window.open('https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33','_blank','noopener')">Open in new tab</button>
-        </div>
-        <div class="iframeWrap">
-          <iframe
-            class="frame full"
-            title="YogaSix Full Schedule"
-            src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33">
-          </iframe>
-        </div>
-        <div class="note">Pro tip: Use this view for planning your week.</div>
-      </article>
+    <!-- Weekly (tall, no scrolling needed) -->
+    <section class="panel" aria-label="Full class schedule">
+      <div class="panelHead">
+        <span class="lotus" aria-hidden="true"></span>
+        <h2 class="panelTitle">Full Class Schedule (7 Days)</h2>
+        <div class="panelSub">Browse all upcoming classes</div>
+      </div>
+      <div class="iframeWrap">
+        <iframe
+          class="frame full"
+          title="YogaSix Full Schedule"
+          src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33">
+        </iframe>
+      </div>
     </section>
 
     <footer class="site">
