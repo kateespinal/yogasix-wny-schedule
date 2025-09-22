@@ -3,85 +3,73 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>YogaSix WNY • Live Class Schedule</title>
+<title>YogaSix WNY • Today’s Classes</title>
 <meta name="theme-color" content="#67d5d2" />
-<meta name="description" content="Pretty, mobile-friendly YogaSix West New York schedule auto-updated from ClubReady." />
-<meta property="og:title" content="YogaSix WNY • Live Class Schedule" />
-<meta property="og:description" content="Pretty, mobile-friendly schedule auto-updated from ClubReady." />
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --teal:#67d5d2; --lav:#b497e7; --text:#13212f; --muted:#5b6b7d;
-    --chip:#eef9f8; --radius:18px; --shadow:0 10px 28px rgba(31,41,55,.16);
+    --teal:#67d5d2; --lav:#b497e7; --ink:#0f172a; --text:#142132; --muted:#64748b;
+    --bg: linear-gradient(135deg, var(--teal), var(--lav));
+    --card: rgba(255,255,255,.82);
+    --pill: #f3f7fb;
+    --radius: 18px;
+    --shadow: 0 10px 28px rgba(31,41,55,.16);
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{
     font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--text);
-    background:linear-gradient(135deg,var(--teal),var(--lav)) fixed;
-    background-size:200% 200%;
+    background:var(--bg) fixed; background-size:200% 200%;
     animation:bg 18s ease-in-out infinite alternate;
-    overflow-x:hidden;
   }
   @keyframes bg{0%{background-position:0% 20%}100%{background-position:100% 80%}}
-
-  .wrap{max-width:1100px;margin:36px auto 72px;padding:0 16px}
+  .wrap{max-width:900px;margin:36px auto 72px;padding:0 16px}
   header{color:#fff;text-align:center}
-  header h1{margin:.2rem 0;font-family:Montserrat;font-weight:800;font-size:clamp(28px,5vw,46px);text-shadow:0 2px 14px rgba(0,0,0,.15)}
-  header p{margin:.2rem 0 0;opacity:.96}
+  header h1{margin:.25rem 0;font-family:Montserrat;font-weight:800;font-size:clamp(28px,5vw,46px);text-shadow:0 2px 14px rgba(0,0,0,.15)}
+  header p{margin:.25rem 0 0;opacity:.96}
 
   .actions{margin:16px auto 22px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .btn{border:0;border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--teal),var(--lav));box-shadow:0 6px 16px rgba(0,0,0,.12)}
   .btn:hover{transform:translateY(-1px)}
 
-  /* panels */
-  .panel{background:rgba(255,255,255,.78);backdrop-filter:blur(10px) saturate(140%);border:1px solid rgba(255,255,255,.6);border-radius:22px;box-shadow:var(--shadow);margin-top:18px}
+  .panel{background:var(--card);backdrop-filter:blur(10px) saturate(140%);border:1px solid rgba(255,255,255,.6);border-radius:22px;box-shadow:var(--shadow);margin-top:18px}
   .panel .head{display:flex;align-items:center;gap:12px;padding:16px 18px}
   .head h2{font-family:Montserrat;font-size:18px;margin:0}
   .head small{margin-left:auto;color:var(--muted)}
-  .content{padding:0 12px 14px}
+  .content{padding:0 16px 16px}
 
-  /* chips + grids */
-  .chips{display:flex;gap:10px;flex-wrap:wrap;padding:0 6px 10px 6px}
-  .chip{background:var(--chip);border:1px solid rgba(0,0,0,.06);color:#0b2840;border-radius:999px;padding:8px 12px;font-weight:600;cursor:pointer}
-  .chip.active{background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08)}
-
-  .grid{display:grid;gap:12px;grid-template-columns:1fr}
-  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
-  @media(min-width:1024px){.grid{grid-template-columns:1fr 1fr 1fr}}
-
-  /* class cards */
-  .card{
-    border-radius:var(--radius);padding:14px;position:relative;color:#0f2340;background:#ffffff;
-    box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06)
+  /* Daily rows */
+  .list{display:flex;flex-direction:column;gap:12px}
+  .row{
+    display:grid; grid-template-columns: 120px 1fr; gap:12px;
+    background:var(--pill); border:1px solid rgba(0,0,0,.06);
+    border-radius:var(--radius); padding:12px 14px; align-items:center;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
   }
-  .time{font-weight:800;font-family:Montserrat;letter-spacing:.02em}
-  .title{margin:.25rem 0 0;font-weight:700}
-  .meta{font-size:.9rem;margin:.2rem 0 0;color:var(--muted)}
-  .pill{position:absolute;top:10px;right:10px;background:#eef4ff;color:#293b6b;padding:4px 8px;border-radius:999px;font-size:.75rem;font-weight:700;border:1px solid rgba(41,59,107,.15)}
-  .empty{padding:22px;text-align:center;color:#6b7a89}
+  .time{
+    font-family:Montserrat; font-weight:800; letter-spacing:.02em; color:#0f2340;
+    background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:999px; padding:8px 10px; text-align:center;
+  }
+  .title{font-weight:700}
+  .meta{color:var(--muted); font-size:.9rem; margin-top:2px}
+  .empty{padding:22px; text-align:center; color:#6b7a89}
 
-  /* type tints (no emojis) */
-  .Hot{background:linear-gradient(135deg,#fff2f2,#ffe4d1)}
-  .Restore{background:linear-gradient(135deg,#f4fff4,#fffde6)}
-  .Sculpt{background:linear-gradient(135deg,#eefcf8,#e7f0ff)}
-  .TRX{background:linear-gradient(135deg,#fff7e1,#fff1c2)}
-  .Mix{background:linear-gradient(135deg,#f6edff,#e9e9ff)}
-  .Flow{background:linear-gradient(135deg,#eef7ff,#e8f5ff)}
-  .Mobility{background:linear-gradient(135deg,#ffeaf4,#f5e3f1)}
-  .Power{background:linear-gradient(135deg,#ffe9e3,#ffdfe4)}
-  .Y101{background:linear-gradient(135deg,#f0ffec,#ffeef2)}
-
-  /* FALLBACK if parsing fails */
-  .fallback{padding:12px;background:rgba(255,255,255,.85);border-top:1px dashed rgba(0,0,0,.08)}
-  .fallback iframe{width:100%;height:1600px;border:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
-
-  /* daily height smaller */
-  #daily .grid .card{min-height:auto}
+  /* tiny sparkle/flower floaters for vibe */
+  .floaters{position:fixed; inset:0; pointer-events:none}
+  .f{position:absolute; opacity:.22; animation:rise var(--t) linear infinite; font-size:var(--fs,22px)}
+  @keyframes rise{0%{transform:translateY(105vh) translateX(var(--sx,0))}100%{transform:translateY(-10vh) translateX(var(--ex,0))}}
 </style>
 </head>
 <body>
+  <!-- subtle sparkles/flowers -->
+  <div class="floaters" aria-hidden="true">
+    <div class="f" style="left:10%; --t:36s; --fs:20px; --sx:-10px; --ex:10px;">✨</div>
+    <div class="f" style="left:30%; --t:30s; --fs:24px; --sx:0px; --ex:-10px;">🌸</div>
+    <div class="f" style="left:55%; --t:34s; --fs:20px; --sx:8px; --ex:-18px;">✨</div>
+    <div class="f" style="left:78%; --t:40s; --fs:24px; --sx:12px; --ex:-12px;">🌺</div>
+  </div>
+
   <div class="wrap">
     <header>
       <h1>Live Class Schedule</h1>
@@ -94,28 +82,15 @@
       <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=45+Riverwalk+Place,+West+New+York,+NJ+07020" target="_blank" rel="noopener">Get Directions</a>
     </div>
 
-    <!-- DAILY (shorter) -->
+    <!-- Today -->
     <section class="panel" id="daily">
-      <div class="head"><h2>Today</h2><small>Auto-updated</small></div>
-      <div class="content">
-        <div class="grid" id="dailyGrid" aria-live="polite">
-          <div class="empty">Loading…</div>
-        </div>
+      <div class="head">
+        <h2>Today</h2>
+        <small>Auto-updated</small>
       </div>
-    </section>
-
-    <!-- WEEKLY (full 7 days) -->
-    <section class="panel" id="weekly">
-      <div class="head"><h2>This Week</h2><small>7-day view</small></div>
       <div class="content">
-        <div class="chips" id="weekChips"></div>
-        <div class="grid" id="weekGrid" aria-live="polite">
+        <div class="list" id="dailyList" aria-live="polite">
           <div class="empty">Loading…</div>
-        </div>
-
-        <!-- styled fallback so the page never looks broken -->
-        <div id="weeklyFallback" class="fallback" style="display:none">
-          <iframe title="Weekly schedule (fallback)" src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=13F841F506AE42F5CA9679DE67582B9D378298A55FD66D33"></iframe>
         </div>
       </div>
     </section>
@@ -124,136 +99,60 @@
 <script>
 const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
 
-const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+/* very simple parser: split by times, infer title/duration/instructor lines */
 const timeRe = /(\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i;
 const get = async (url) => { try{ const r=await fetch(url,{cache:"no-store"}); if(!r.ok) throw 0; return await r.text(); }catch{ return null; } };
+const clean = (t) => (t||"").replace(/\u00A0/g," ").replace(/\s+/g," ").trim();
 
-function clean(t){ return (t||"").replace(/\u00A0/g,' ').replace(/\s+/g,' ').trim(); }
-function textOf(node){ return clean(node?.innerText || node?.textContent || ""); }
-
-/* ---------- parsing strategies ---------- */
-function parseLinesToClasses(lines){
-  const out=[]; let cur=null;
-  for(const raw of lines){
-    const line=clean(raw); if(!line) continue;
-    const t=line.match(timeRe);
-    if(t){ if(cur) out.push(cur); cur={time:t[1],title:"",duration:"",instructor:"",notes:""}; continue; }
-    if(!cur) continue;
-    if(/(mins?|minute|hour)/i.test(line) && !cur.duration){ cur.duration=line; }
-    else if(/(with|instructor)/i.test(line) && !cur.instructor){ cur.instructor=line.replace(/with/i,'').trim(); }
-    else if(!cur.title){ cur.title=line; }
-    else { cur.notes += (cur.notes?" • ":"") + line; }
-  }
-  if(cur) out.push(cur);
-  return out;
-}
-
-// A: weekly table columns
-function parseWeekByColumns(doc){
-  const tds=[...doc.querySelectorAll("td")];
-  const cols=tds.map(td=>textOf(td)).filter(txt=>timeRe.test(txt)).map(txt=>txt.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i));
-  if(cols.length<5) return null;
-  const week={}; cols.slice(0,7).forEach((arr,i)=>week[dayNames[i]]=parseLinesToClasses(arr));
-  return week;
-}
-// B: headings
-function parseWeekByHeadings(doc){
-  const all=textOf(doc.body);
-  const dayRe=/(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/ig;
-  const idx=[]; let m; while((m=dayRe.exec(all))) idx.push({day:m[1], i:m.index});
-  if(idx.length<5) return null;
-  const week={};
-  for(let k=0;k<idx.length;k++){
-    const start=idx[k].i, end=(k+1<idx.length?idx[k+1].i:all.length);
-    const chunk=all.slice(start,end).replace(new RegExp(idx[k].day,'i'),'');
-    week[idx[k].day]=parseLinesToClasses(chunk.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i));
-  }
-  return week;
-}
-// C: generic
-function parseWeekGeneric(doc){
-  const text=textOf(doc.body);
-  const parts=text.split(/Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday/i).filter(Boolean);
-  if(parts.length<2) return null;
-  const week={}; for(let i=0;i<7;i++){ week[dayNames[i]]=parseLinesToClasses((parts[i]||"").split(/\n|·|\u2022|-/)); }
-  return week;
-}
-function extractWeek(html){
-  const doc=new DOMParser().parseFromString(html,"text/html");
-  return parseWeekByColumns(doc) || parseWeekByHeadings(doc) || parseWeekGeneric(doc) || null;
-}
-function extractDay(html){
-  const doc=new DOMParser().parseFromString(html,"text/html");
-  const txt=textOf(doc.body);
-  const blocks=txt.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i);
-  return parseLinesToClasses(blocks);
-}
-
-/* ---------- rendering ---------- */
-const typeMap = [
-  {key:/\bhot\b/i, cls:"Hot"},
-  {key:/restore/i, cls:"Restore"},
-  {key:/sculpt/i, cls:"Sculpt"},
-  {key:/trx/i, cls:"TRX"},
-  {key:/mix|six|blend/i, cls:"Mix"},
-  {key:/flow/i, cls:"Flow"},
-  {key:/mobility|stretch/i, cls:"Mobility"},
-  {key:/power/i, cls:"Power"},
-  {key:/101|intro/i, cls:"Y101"}
-];
-function classTint(title){
-  const t=title||""; for(const m of typeMap){ if(m.key.test(t)) return m.cls; } return "Flow";
-}
-function renderCards(el, list){
-  if(!list || !list.length){ el.innerHTML='<div class="empty">No classes found.</div>'; return; }
-  el.innerHTML="";
-  for(const c of list){
-    const div=document.createElement("div");
-    div.className="card " + classTint(c.title);
-    div.innerHTML = `
-      <div class="pill">${c.duration || ""}</div>
-      <div class="time">${c.time || ""}</div>
-      <div class="title">${c.title || ""}</div>
-      ${c.instructor ? `<div class="meta">${c.instructor}</div>` : ""}
-      ${c.notes ? `<div class="meta">${c.notes}</div>` : ""}
-    `;
-    el.appendChild(div);
-  }
-}
-function renderChips(el, keys, onClick, active){
-  el.innerHTML=""; keys.forEach(k=>{ const b=document.createElement("button"); b.className="chip"+(k===active?" active":""); b.textContent=k; b.onclick=()=>onClick(k); el.appendChild(b); });
-}
-
-/* ---------- boot ---------- */
-(async function init(){
-  // WEEKLY
-  let weeklyOK=false;
-  const weekHTML=await get(`${WORKER_BASE}/?which=weekly`);
-  if(weekHTML){
-    const week=extractWeek(weekHTML);
-    if(week){
-      const keys=Object.keys(week).filter(k=>week[k]?.length);
-      if(keys.length){
-        weeklyOK=true;
-        let active=keys[0];
-        renderChips(document.getElementById("weekChips"), keys, (k)=>{active=k; renderCards(document.getElementById("weekGrid"), week[k]);}, active);
-        renderCards(document.getElementById("weekGrid"), week[active]);
-      }
+function parseDaily(html){
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const txt = clean(doc.body?.innerText || "");
+  // Split at each time; keep the time token with the block
+  const blocks = txt.split(/(?=\b\d{1,2}:\d{2}\s?(?:AM|PM)\b)/i).filter(Boolean);
+  const classes = [];
+  for(const blk of blocks){
+    const lines = clean(blk).split(/(?:\r?\n)|·|\u2022| - /).map(clean).filter(Boolean);
+    if(!lines.length) continue;
+    const tm = lines[0].match(timeRe)?.[1];
+    if(!tm) continue;
+    // Heuristics: next 1-3 lines carry title / duration / instructor / spaces
+    let title="", duration="", instructor="", notes="";
+    for(let i=1;i<Math.min(lines.length,6);i++){
+      const L = lines[i];
+      if(!title) { title = L; continue; }
+      if(/(mins?|minute|hour)/i.test(L) && !duration){ duration = L; continue; }
+      if(/spaces?/i.test(L) || /occupied/i.test(L)){ notes = L; continue; }
+      if(!instructor) instructor = L;
     }
+    classes.push({ time: tm, title, duration, instructor, notes });
   }
-  if(!weeklyOK){
-    document.getElementById('weeklyFallback').style.display='block';
-    document.getElementById('weekGrid').innerHTML='<div class="empty">Showing original weekly view below…</div>';
-  }
+  return classes;
+}
 
-  // DAILY (shorter panel)
-  const dayHTML=await get(`${WORKER_BASE}/?which=daily`);
-  if(dayHTML){
-    const classes=extractDay(dayHTML);
-    renderCards(document.getElementById("dailyGrid"), classes?.slice(0,9) || []); // keep daily compact
-  }else{
-    document.getElementById("dailyGrid").innerHTML='<div class="empty">Couldn’t load today’s classes.</div>';
-  }
+function renderDaily(list){
+  const el = document.getElementById("dailyList");
+  if(!list || !list.length){ el.innerHTML = '<div class="empty">No classes today.</div>'; return; }
+  el.innerHTML = "";
+  list.forEach(c=>{
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div class="time">${c.time || ""}</div>
+      <div>
+        <div class="title">${c.title || ""}</div>
+        ${c.duration ? `<div class="meta">${c.duration}</div>` : ""}
+        ${c.instructor ? `<div class="meta">${c.instructor}</div>` : ""}
+        ${c.notes ? `<div class="meta">${c.notes}</div>` : ""}
+      </div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+(async function init(){
+  const html = await get(`${WORKER_BASE}/?which=daily`);
+  const classes = html ? parseDaily(html) : [];
+  renderDaily(classes);
 })();
 </script>
 </body>
