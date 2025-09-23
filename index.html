@@ -3,178 +3,195 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>YogaSix West New York • Schedule</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+<title>YogaSix West New York — Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg1:#a8d8e9;
-    --bg2:#d7c5f2;
-    --card:#f5f8fb;
-    --ink:#13202d;
-    --muted:#6e7b8a;
-    --shadow:0 10px 30px rgba(0,0,0,.12);
-    --r:18px;
+    --card-bg: rgba(255,255,255,0.85);
+    --border: rgba(0,0,0,0.07);
+    --muted: #667085;
+    --ink: #0b1220;
+    --accent1: #6ec3ff;
+    --accent2: #7fafff;
+    --accent3: #b38cff;
+    --accent4: #ffb3e0;
+    --pill: #f6f8fb;
   }
-  *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0;
-    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
     color:var(--ink);
-    background:
-      url("data:image/svg+xml;utf8,\
-      <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140' opacity='.12'>\
-        <g fill='none' stroke='%23ffffff' stroke-width='2'>\
-          <path d='M70 38c10 8 18 17 18 26 0 13-12 20-18 20s-18-7-18-20c0-9 8-18 18-26z'/>\
-          <path d='M70 84c8-2 16-6 22-13M70 84c-8-2-16-6-22-13'/>\
-        </g>\
-        <g stroke='%23ffffff' stroke-width='2' fill='none' transform='translate(80 85)'>\
-          <rect x='0' y='0' rx='6' ry='6' width='44' height='14'/>\
-          <circle cx='38' cy='7' r='5'/>\
-        </g>\
-        <g fill='none' stroke='%23ffffff' stroke-width='1.4' opacity='.8' transform='translate(15 90)'>\
-          <circle cx='12' cy='12' r='10'/>\
-          <circle cx='12' cy='12' r='6'/>\
-        </g>\
-      </svg>"),
-      radial-gradient(1200px 600px at 15% -10%, #c6f1f0 0%, transparent 55%),
-      radial-gradient(900px 500px at 85% -20%, #f3e8ff 0%, transparent 60%),
-      linear-gradient(135deg, var(--bg1), var(--bg2));
-    background-size:140px 140px, auto, auto, auto;
+    background: radial-gradient(1200px 900px at -10% -10%, #b3e7ff 0%, transparent 40%),
+                radial-gradient(1200px 900px at 110% 20%, #ffd0f0 0%, transparent 45%),
+                radial-gradient(1000px 900px at 30% 120%, #d8d6ff 0%, transparent 40%),
+                linear-gradient(180deg,#e9f6ff 0%, #e8ecff 30%, #f7e9ff 100%);
+    overflow-x:hidden;
   }
-  .wrap{max-width:1120px;margin:46px auto;padding:0 18px}
-  .title{text-align:center;font-weight:800;font-size:clamp(28px,5vw,44px);margin:0;color:#0f1a26}
-  .subtitle{text-align:center;margin:8px 0 16px;color:var(--muted);font-weight:700}
-
-  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0 28px}
-  .btn{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:12px 18px;border-radius:999px;color:#fff;text-decoration:none;font-weight:800;
-    background:linear-gradient(135deg,#74e0d6,#8ea6ff);box-shadow:var(--shadow);
-    transition:transform .08s ease, filter .15s ease;
+  /* floating yoga icons (lotus, chakra-ish circles) */
+  .float{
+    position:fixed; pointer-events:none; opacity:.18; filter:blur(.2px);
+    animation: drift 24s linear infinite;
   }
-  .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
-  .btn.s{background:linear-gradient(135deg,#9fd2ff,#cca8ff)}
-  .btn.n{background:linear-gradient(135deg,#ffd5a8,#ffa3bc)}
+  .f1{ top:8vh; left:6vw; font-size:90px; animation-duration:28s }
+  .f2{ top:22vh; right:10vw; font-size:70px; animation-duration:22s }
+  .f3{ bottom:8vh; left:14vw; font-size:80px; animation-duration:25s }
+  .f4{ bottom:14vh; right:18vw; font-size:95px; animation-duration:30s }
+  @keyframes drift{
+    0%{ transform:translateY(0) rotate(0deg) }
+    50%{ transform:translateY(-12px) rotate(6deg) }
+    100%{ transform:translateY(0) rotate(0deg) }
+  }
 
-  .card{background:rgba(245,248,251,.9);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin:18px 0;backdrop-filter:blur(6px)}
-  .card-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px dashed #dbe5f0;background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.35))}
-  .card-head h3{margin:0;font-size:18px}
-  .card-body{padding:12px 10px 14px}
+  .wrap{ max-width:1100px; margin:64px auto; padding:0 20px; }
+  .title{ text-align:center; margin-bottom:12px; font-weight:800; letter-spacing:.3px; font-size:42px }
+  .subtitle{ text-align:center; color:var(--muted); font-weight:600; margin-bottom:22px }
 
-  /* Daily list rows */
-  .row{display:flex;gap:16px;align-items:center;background:#f1f5fa;border-radius:14px;margin:10px 8px;padding:12px}
-  .time{min-width:92px;text-align:center;border-radius:999px;background:#fff;border:1px solid #e7eef6;padding:10px 14px;font-weight:800;box-shadow:inset 0 1px 0 #fff}
-  .txt{line-height:1.25}
-  .title-line{font-weight:800}
-  .dash{margin:0 6px;color:#90a0b2;font-weight:600}
-  .teacher{color:#6c7a89;font-weight:600}
-  .empty{color:#6e7b8a;text-align:center;padding:18px}
+  .cta-row{
+    display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:30px
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+    border-radius:999px; color:#0e1330; font-weight:700; font-size:14px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    box-shadow: 0 10px 24px rgba(98,107,255,.25);
+    text-decoration:none;
+  }
+  .chip.secondary{
+    background: linear-gradient(135deg, var(--accent2), var(--accent4));
+  }
 
-  /* iframe wrapper */
-  .frame-wrap{border-radius:16px;overflow:hidden;background:#fff;border:1px solid #e6edf5}
-  .frame{width:100%;height:1000px;border:0;display:block}
-  @media (max-width:640px){ .frame{height:1080px} }
+  .card{
+    background:var(--card-bg); border:1px solid var(--border);
+    border-radius:20px; box-shadow:0 20px 60px rgba(22,26,80,.12);
+    overflow:hidden; margin-bottom:22px;
+    backdrop-filter: blur(6px);
+  }
+  .card .head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 18px; font-weight:800; border-bottom:1px dashed var(--border);
+    background:linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.35));
+  }
+  .meta{ color:var(--muted); font-size:13px; font-weight:600 }
+
+  .row{
+    display:flex; align-items:center; gap:16px;
+    padding:16px 18px; border-top:1px solid var(--border)
+  }
+  .row:first-of-type{ border-top:0 }
+  .time{
+    background:var(--pill); border:1px solid var(--border);
+    padding:8px 12px; border-radius:999px; font-weight:800; font-size:14px
+  }
+  .txt{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:700
+  }
+  .dash{ color:var(--muted); font-weight:800 }
+  .teacher{ font-weight:600; color:#29324a }
+
+  .empty{
+    padding:28px 18px; color:var(--muted); font-weight:600
+  }
+
+  iframe{
+    width:100%; height:900px; border:0; border-top:1px dashed var(--border)
+  }
+
+  .footer-note{
+    text-align:center; color:var(--muted); font-size:12px; margin-top:16px
+  }
 </style>
 </head>
 <body>
+  <!-- floating iconography -->
+  <div class="float f1">🪷</div>
+  <div class="float f2">🧘‍♀️</div>
+  <div class="float f3">🕉️</div>
+  <div class="float f4">📿</div>
+
   <div class="wrap">
-    <h1 class="title">YogaSix West New York</h1>
-    <div class="subtitle">Auto-updated daily • Weekly embedded from ClubReady</div>
+    <div class="title">YogaSix West New York</div>
+    <div class="subtitle">Auto-updated from ClubReady</div>
 
     <div class="cta-row">
-      <a class="btn" href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank" rel="noopener">Book Intro Offer</a>
-      <a class="btn s" href="tel:+12013615299">Call (201) 361-5299</a>
-      <a class="btn n" href="https://maps.google.com/?q=YogaSix+West+New+York" target="_blank" rel="noopener">Get Directions</a>
+      <a class="chip" href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank" rel="noopener">Book Intro Offer</a>
+      <a class="chip secondary" href="tel:+12013615299">Call (201) 361-5299</a>
+      <a class="chip" href="https://maps.google.com/?q=YogaSix+West+New+York" target="_blank" rel="noopener">Get Directions</a>
     </div>
 
-    <!-- TODAY (parsed & pretty) -->
-    <section class="card">
-      <div class="card-head">
-        <h3>Today’s Classes</h3>
-        <div id="todayDate" style="color:#6e7b8a;font-weight:700"></div>
+    <!-- Daily -->
+    <section class="card" id="dailyCard">
+      <div class="head">
+        <div>Today’s Classes</div>
+        <div class="meta" id="dailyMeta">Loading…</div>
       </div>
-      <div id="todayBody" class="card-body">
-        <div class="empty">Loading…</div>
-      </div>
+      <div id="dailyList" class="list"></div>
     </section>
 
-    <!-- WEEKLY (embedded widget, no parsing) -->
+    <!-- Weekly widget (no parsing) -->
     <section class="card">
-      <div class="card-head">
-        <h3>Weekly Schedule (ClubReady Widget)</h3>
-        <div style="color:#6e7b8a;font-weight:700">Sunday → Saturday</div>
+      <div class="head">
+        <div>This Week (embedded)</div>
+        <div class="meta">From ClubReady</div>
       </div>
-      <div class="card-body">
-        <div class="frame-wrap">
-          <!-- Your “full schedule” iframe exactly as provided -->
-          <iframe
-            class="frame"
-            src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=12BF945018B3E576D8848C93D10ED5EF0A74FDC8810A8C48"
-            title="Weekly Schedule"></iframe>
-        </div>
-        <div style="text-align:center;margin-top:10px">
-          <a href="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=12BF945018B3E576D8848C93D10ED5EF0A74FDC8810A8C48" target="_blank" rel="noopener" style="color:#4156ff;font-weight:700;text-decoration:none">Open full schedule in a new tab ↗</a>
-        </div>
-      </div>
+      <iframe
+        title="Full Week Schedule"
+        src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=12BF945018B3E576D8848C93D10ED5EF0A74FDC8810A8C48"
+      ></iframe>
     </section>
+
+    <div class="footer-note">If you don’t see classes, check your browser console for <em>fetch</em> errors.</div>
   </div>
 
 <script>
-  // CONFIG — daily JSON from your Worker
-  const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
+(async () => {
+  const DAILY_URL = "https://yogasix-schedule.kate-espinal.workers.dev/daily.json";
 
-  // Utilities
-  function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
-  function row(item){
-    const r=el('div','row');
-    r.append(el('div','time',item.time||''));
-    const t=el('div','txt');
-    const titleLine=el('div','title-line');
-    titleLine.append(
-      el('span',null,item.title||''),
-      el('span','dash',' - '),
-      el('span','teacher',item.teacher||'')
-    );
-    t.append(titleLine);
-    r.append(t);
-    return r;
-  }
+  const $list = document.getElementById("dailyList");
+  const $meta = document.getElementById("dailyMeta");
 
-  // Render today from Worker (only title & teacher used)
-  async function loadToday(){
-    const body = document.getElementById('todayBody');
-    try{
-      const resp = await fetch(`${WORKER_BASE}/daily.json`, {cache:'no-store'});
-      if(!resp.ok) throw new Error('daily.json failed');
-      const data = await resp.json();
-      // header date
-      const d = new Date((data.date||new Date().toISOString().slice(0,10))+'T00:00:00');
-      document.getElementById('todayDate').textContent =
-        d.toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'});
+  try {
+    const resp = await fetch(DAILY_URL, { cache: "no-store" });
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const data = await resp.json();
 
-      body.innerHTML = '';
-      const items = (data.items||[]).filter(x => (x.title||'').trim());
-      if(!items.length){ body.append(el('div','empty','No classes')); return; }
-      items.forEach(it => body.append(row(it)));
-    }catch(err){
-      console.error(err);
-      body.innerHTML = `
-        <div class="empty">
-          Couldn’t load today’s classes.
-          <br />
-          <small>
-            Check the Worker is reachable: 
-            <a href="${WORKER_BASE}/daily.json" target="_blank" rel="noopener">/daily.json</a>
-          </small>
-        </div>`;
+    if (!data || !data.items) throw new Error("Bad JSON shape");
+
+    $meta.textContent = data.pretty || data.date || "Today";
+
+    if (!data.items.length) {
+      $list.innerHTML = `<div class="empty">No classes.</div>`;
+      return;
     }
+
+    $list.innerHTML = data.items.map(it => {
+      const time = sanitize(it.time);
+      const title = sanitize(it.title);
+      const teacher = sanitize(it.teacher);
+      return `
+        <div class="row">
+          <div class="time">${time}</div>
+          <div class="txt">
+            <span class="title">${title}</span>
+            <span class="dash">–</span>
+            <span class="teacher">${teacher}</span>
+          </div>
+        </div>`;
+    }).join("");
+  } catch (err) {
+    console.error("Failed to load daily.json:", err);
+    $meta.textContent = "Load error";
+    $list.innerHTML = `<div class="empty">Couldn’t load daily schedule. Open the console for details.</div>`;
   }
 
-  loadToday();
+  function sanitize(s) {
+    if (!s && s !== 0) return "";
+    return String(s)
+      .replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+})();
 </script>
 </body>
 </html>
