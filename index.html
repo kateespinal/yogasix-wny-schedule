@@ -1,197 +1,446 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>YogaSix West New York — Schedule</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<style>
-  :root{
-    --card-bg: rgba(255,255,255,0.85);
-    --border: rgba(0,0,0,0.07);
-    --muted: #667085;
-    --ink: #0b1220;
-    --accent1: #6ec3ff;
-    --accent2: #7fafff;
-    --accent3: #b38cff;
-    --accent4: #ffb3e0;
-    --pill: #f6f8fb;
-  }
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-    color:var(--ink);
-    background: radial-gradient(1200px 900px at -10% -10%, #b3e7ff 0%, transparent 40%),
-                radial-gradient(1200px 900px at 110% 20%, #ffd0f0 0%, transparent 45%),
-                radial-gradient(1000px 900px at 30% 120%, #d8d6ff 0%, transparent 40%),
-                linear-gradient(180deg,#e9f6ff 0%, #e8ecff 30%, #f7e9ff 100%);
-    overflow-x:hidden;
-  }
-  /* floating yoga icons (lotus, chakra-ish circles) */
-  .float{
-    position:fixed; pointer-events:none; opacity:.18; filter:blur(.2px);
-    animation: drift 24s linear infinite;
-  }
-  .f1{ top:8vh; left:6vw; font-size:90px; animation-duration:28s }
-  .f2{ top:22vh; right:10vw; font-size:70px; animation-duration:22s }
-  .f3{ bottom:8vh; left:14vw; font-size:80px; animation-duration:25s }
-  .f4{ bottom:14vh; right:18vw; font-size:95px; animation-duration:30s }
-  @keyframes drift{
-    0%{ transform:translateY(0) rotate(0deg) }
-    50%{ transform:translateY(-12px) rotate(6deg) }
-    100%{ transform:translateY(0) rotate(0deg) }
-  }
-
-  .wrap{ max-width:1100px; margin:64px auto; padding:0 20px; }
-  .title{ text-align:center; margin-bottom:12px; font-weight:800; letter-spacing:.3px; font-size:42px }
-  .subtitle{ text-align:center; color:var(--muted); font-weight:600; margin-bottom:22px }
-
-  .cta-row{
-    display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:30px
-  }
-  .chip{
-    display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
-    border-radius:999px; color:#0e1330; font-weight:700; font-size:14px;
-    background: linear-gradient(135deg, var(--accent1), var(--accent3));
-    box-shadow: 0 10px 24px rgba(98,107,255,.25);
-    text-decoration:none;
-  }
-  .chip.secondary{
-    background: linear-gradient(135deg, var(--accent2), var(--accent4));
-  }
-
-  .card{
-    background:var(--card-bg); border:1px solid var(--border);
-    border-radius:20px; box-shadow:0 20px 60px rgba(22,26,80,.12);
-    overflow:hidden; margin-bottom:22px;
-    backdrop-filter: blur(6px);
-  }
-  .card .head{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 18px; font-weight:800; border-bottom:1px dashed var(--border);
-    background:linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.35));
-  }
-  .meta{ color:var(--muted); font-size:13px; font-weight:600 }
-
-  .row{
-    display:flex; align-items:center; gap:16px;
-    padding:16px 18px; border-top:1px solid var(--border)
-  }
-  .row:first-of-type{ border-top:0 }
-  .time{
-    background:var(--pill); border:1px solid var(--border);
-    padding:8px 12px; border-radius:999px; font-weight:800; font-size:14px
-  }
-  .txt{
-    display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-weight:700
-  }
-  .dash{ color:var(--muted); font-weight:800 }
-  .teacher{ font-weight:600; color:#29324a }
-
-  .empty{
-    padding:28px 18px; color:var(--muted); font-weight:600
-  }
-
-  iframe{
-    width:100%; height:900px; border:0; border-top:1px dashed var(--border)
-  }
-
-  .footer-note{
-    text-align:center; color:var(--muted); font-size:12px; margin-top:16px
-  }
-</style>
-</head>
-<body>
-  <!-- floating iconography -->
-  <div class="float f1">🪷</div>
-  <div class="float f2">🧘‍♀️</div>
-  <div class="float f3">🕉️</div>
-  <div class="float f4">📿</div>
-
-  <div class="wrap">
-    <div class="title">YogaSix West New York</div>
-    <div class="subtitle">Auto-updated from ClubReady</div>
-
-    <div class="cta-row">
-      <a class="chip" href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank" rel="noopener">Book Intro Offer</a>
-      <a class="chip secondary" href="tel:+12013615299">Call (201) 361-5299</a>
-      <a class="chip" href="https://maps.google.com/?q=YogaSix+West+New+York" target="_blank" rel="noopener">Get Directions</a>
-    </div>
-
-    <!-- Daily -->
-    <section class="card" id="dailyCard">
-      <div class="head">
-        <div>Today’s Classes</div>
-        <div class="meta" id="dailyMeta">Loading…</div>
-      </div>
-      <div id="dailyList" class="list"></div>
-    </section>
-
-    <!-- Weekly widget (no parsing) -->
-    <section class="card">
-      <div class="head">
-        <div>This Week (embedded)</div>
-        <div class="meta">From ClubReady</div>
-      </div>
-      <iframe
-        title="Full Week Schedule"
-        src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=12BF945018B3E576D8848C93D10ED5EF0A74FDC8810A8C48"
-      ></iframe>
-    </section>
-
-    <div class="footer-note">If you don’t see classes, check your browser console for <em>fetch</em> errors.</div>
-  </div>
-
-<script>
-(async () => {
-  const DAILY_URL = "https://yogasix-schedule.kate-espinal.workers.dev/daily.json";
-
-  const $list = document.getElementById("dailyList");
-  const $meta = document.getElementById("dailyMeta");
-
-  try {
-    const resp = await fetch(DAILY_URL, { cache: "no-store" });
-    if (!resp.ok) throw new Error("HTTP " + resp.status);
-    const data = await resp.json();
-
-    if (!data || !data.items) throw new Error("Bad JSON shape");
-
-    $meta.textContent = data.pretty || data.date || "Today";
-
-    if (!data.items.length) {
-      $list.innerHTML = `<div class="empty">No classes.</div>`;
-      return;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>YogaSix West New York — Class Schedule</title>
+  <meta name="description" content="YogaSix West New York — Daily & Weekly Class Schedule" />
+  <style>
+    :root{
+      /* YogaSix-ish palette (approachable + fresh) */
+      --bg1:#e6f7f6;   /* pale teal */
+      --bg2:#f0e9ff;   /* lavender */
+      --ink:#0e1a1a;   /* deep charcoal */
+      --muted:#4b5563; /* slate */
+      --brand:#2bc2c2; /* aqua */
+      --brand-2:#8b7cf5; /* lavender accent */
+      --chip:#ecfeff;  /* very light */
+      --card:#ffffffee;/* glassy white */
+      --ok:#10b981;
+      --warn:#f59e0b;
+      --err:#ef4444;
+      --shadow:0 10px 30px rgba(16,24,40,.12);
+      --radius:20px;
+    }
+    /* Flowing gradient “breath” background */
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+      background: radial-gradient(1200px 800px at 15% 10%, var(--bg1), transparent 60%),
+                  radial-gradient(1200px 900px at 85% 20%, var(--bg2), transparent 60%),
+                  radial-gradient(1000px 700px at 50% 110%, #fff, transparent 60%);
+      min-height:100svh;
+      overflow-x:hidden;
+    }
+    .bg-anim{
+      position:fixed; inset: -20vmax; z-index:-1; pointer-events:none;
+      background: radial-gradient(40vmax 30vmax at 20% 30%, rgba(43,194,194,.25), transparent 60%),
+                  radial-gradient(35vmax 25vmax at 80% 40%, rgba(139,124,245,.22), transparent 60%);
+      filter: blur(40px);
+      animation: breathe 12s ease-in-out infinite alternate;
+    }
+    @keyframes breathe{
+      0%{ transform: translate3d(0,0,0) scale(1);}
+      100%{ transform: translate3d(2vmax,-2vmax,0) scale(1.04);}
     }
 
-    $list.innerHTML = data.items.map(it => {
-      const time = sanitize(it.time);
-      const title = sanitize(it.title);
-      const teacher = sanitize(it.teacher);
-      return `
-        <div class="row">
-          <div class="time">${time}</div>
-          <div class="txt">
-            <span class="title">${title}</span>
-            <span class="dash">–</span>
-            <span class="teacher">${teacher}</span>
-          </div>
-        </div>`;
-    }).join("");
-  } catch (err) {
-    console.error("Failed to load daily.json:", err);
-    $meta.textContent = "Load error";
-    $list.innerHTML = `<div class="empty">Couldn’t load daily schedule. Open the console for details.</div>`;
-  }
+    header{
+      padding:28px 20px 10px;
+    }
+    .wrap{
+      max-width:1100px; margin:0 auto; padding:0 16px 60px;
+    }
+    .brand-row{
+      display:flex; gap:16px; align-items:center; justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .logo{
+      display:flex; align-items:center; gap:14px;
+      font-weight:800; letter-spacing:.4px; font-size:22px;
+    }
+    .logo .dot{
+      width:28px; height:28px; border-radius:50%;
+      background:conic-gradient(from 120deg, var(--brand), var(--brand-2));
+      box-shadow: 0 0 0 4px #fff7, 0 6px 18px #0001;
+    }
+    .pill{
+      border-radius:999px; padding:8px 14px; background:#ffffffaa; backdrop-filter: blur(6px);
+      border:1px solid #ffffff; font-size:13px; color:var(--muted);
+    }
+    h1{
+      margin:8px 0 20px; font-size: clamp(26px, 2.4vw, 34px);
+      line-height:1.15; letter-spacing:.2px;
+    }
+    .sub{
+      color:var(--muted); margin-top:-10px; margin-bottom:22px; font-size:15px;
+    }
 
-  function sanitize(s) {
-    if (!s && s !== 0) return "";
-    return String(s)
-      .replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-})();
-</script>
+    .grid{
+      display:grid; gap:22px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width:980px){
+      .grid{ grid-template-columns: 1.2fr .8fr; }
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid #ffffffd9;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card > .head{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:16px 18px; border-bottom:1px solid #eef2f7;
+      background:linear-gradient(180deg,#ffffffaa,#ffffff80);
+      backdrop-filter: blur(6px);
+    }
+    .head h2{
+      margin:0; font-size:18px; letter-spacing:.3px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .status{
+      display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted);
+    }
+    .dot-sm{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 4px #10b98122;}
+    .warn{ background:var(--warn); box-shadow:0 0 0 4px #f59e0b22;}
+    .err{ background:var(--err); box-shadow:0 0 0 4px #ef444422;}
+
+    .body{ padding:14px 14px 18px; }
+
+    /* Daily list */
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .row{
+      display:grid; gap:12px; align-items:center;
+      grid-template-columns: auto 1fr auto;
+      background: #fff; border:1px solid #eef2f7; border-radius:14px; padding:12px 14px;
+    }
+    .time{
+      font-variant-numeric: tabular-nums; font-weight:700; letter-spacing:.2px;
+      padding:6px 10px; border-radius:999px; background:var(--chip); border:1px dashed #d4f3f4;
+    }
+    .class-name{ font-weight:700; }
+    .teacher{ color:var(--muted); font-size:13px;}
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+    .chip{
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      background: linear-gradient(180deg,#e9fcff,#eef2ff);
+      border:1px solid #e8eefb;
+    }
+
+    /* Weekly grid */
+    .week{
+      display:grid; gap:10px;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    @media (max-width:900px){
+      .week{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width:560px){
+      .week{ grid-template-columns: 1fr; }
+    }
+    .dow{
+      background:#fff; border:1px solid #eef2f7; border-radius:16px; overflow:hidden;
+      display:flex; flex-direction:column; min-height:140px;
+    }
+    .dow .hd{
+      padding:10px 12px; font-weight:700; background:linear-gradient(180deg,#f8fafc,#fff);
+      border-bottom:1px solid #eef2f7; display:flex; align-items:center; gap:8px;
+    }
+    .dow .it{
+      display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px dashed #f0f4f9;
+    }
+    .dow .it:last-child{ border-bottom:0; }
+    .tiny-time{
+      font-size:12px; font-variant-numeric: tabular-nums;
+      padding:4px 8px; border-radius:999px; background:#f8feff; border:1px solid #e6f6f7;
+    }
+    .empty{
+      padding:18px; color:var(--muted); font-size:14px;
+    }
+
+    /* Fallback iframe wrapper (styled so it still looks nice) */
+    .iframe-wrap{
+      border-radius:16px; overflow:hidden; border:1px solid #eef2f7; background:#fff; box-shadow: var(--shadow);
+    }
+    iframe{ display:block; width:100%; border:0; }
+
+    footer{
+      margin-top:26px; color:var(--muted); font-size:12px; text-align:center;
+    }
+    a.btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+      border-radius:12px; border:1px solid #e6eaf2; background:#fff; text-decoration:none; color:var(--ink);
+      font-size:14px; box-shadow: var(--shadow);
+    }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <div class="bg-anim" aria-hidden="true"></div>
+
+  <header class="wrap">
+    <div class="brand-row">
+      <div class="logo">
+        <span class="dot"></span>
+        <span>YogaSix West New York</span>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://members.yogasix.com/studios/yogasix-west-new-york" target="_blank" rel="noopener">Book a Class</a>
+        <span id="last-upd" class="pill">Loading status…</span>
+      </div>
+    </div>
+    <h1>Daily & Weekly Schedule</h1>
+    <p class="sub">Clean, readable, and on-brand. The list below refreshes from your Cloudflare Worker and falls back to ClubReady if needed.</p>
+  </header>
+
+  <main class="wrap grid">
+    <!-- DAILY -->
+    <section class="card" id="daily-card">
+      <div class="head">
+        <h2>Today’s Classes <span id="daily-date"></span></h2>
+        <div class="status"><span class="dot-sm" id="daily-dot"></span><span id="daily-status">Loading…</span></div>
+      </div>
+      <div class="body">
+        <div id="daily-list" class="list" hidden></div>
+
+        <!-- Fallback -->
+        <div id="daily-fallback" class="iframe-wrap" hidden>
+          <iframe
+            src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=8806E19DB49A71056BF278ACF86621C99D5AD8EDA3412CF0"
+            height="640" loading="lazy" title="Daily Schedule (Fallback)">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- WEEKLY -->
+    <section class="card" id="weekly-card">
+      <div class="head">
+        <h2>This Week</h2>
+        <div class="status"><span class="dot-sm" id="weekly-dot"></span><span id="weekly-status">Loading…</span></div>
+      </div>
+      <div class="body">
+        <div id="week-grid" class="week" hidden></div>
+
+        <!-- Fallback -->
+        <div id="weekly-fallback" class="iframe-wrap" hidden>
+          <iframe
+            src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=07C3B1440216478A3711C5DFC09E56EDD66B98407764FC0A"
+            height="800" loading="lazy" title="Weekly Schedule (Fallback)">
+          </iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    Built with ❤️ for our WNY community • Questions? Call (201) 361-5299 • 45 Riverwalk Pl, West New York, NJ
+  </footer>
+
+  <script>
+    // === CONFIG ===
+    const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
+    const DAILY_ENDPOINT   = WORKER_BASE + "/daily.json";   // from your Worker 'endpoints'
+    const WEEKLY_ENDPOINT  = WORKER_BASE + "/weekly.json";  // if your worker doesn't expose this yet, the UI will iframe-fallback
+
+    // === Utilities ===
+    const byId = id => document.getElementById(id);
+    const safe = v => (v ?? "").toString().trim();
+    const titleCase = s => safe(s).toLowerCase()
+      .replace(/\b([a-z])/g, m => m.toUpperCase())
+      .replace(/\s+/g, ' ')
+      .replace(/\s-\s/g, ' – ');
+    const tidyClass = s => titleCase(s).replace(/\s{2,}/g,' ');
+    const tidyTeacher = s => titleCase(s).replace(/\bYtt\b/,'YTT');
+
+    // 6:00AM format (no space before AM/PM)
+    function to12hNoSpace(dateOrStr){
+      const t = safe(dateOrStr);
+      // If we got 'HH:MM' try to parse quickly
+      const m = t.match(/^(\d{1,2}):(\d{2})/);
+      let hours, minutes;
+      if(m){ hours = +m[1]; minutes = +m[2]; }
+      else{
+        const d = new Date(dateOrStr);
+        if(!isNaN(d)) { hours = d.getHours(); minutes = d.getMinutes(); }
+        else { return t; }
+      }
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      return `${hours}:${String(minutes).padStart(2,'0')}${ampm}`;
+    }
+
+    function setStatus(dotId, textId, ok=true, msg="OK"){
+      const dot = byId(dotId);
+      const txt = byId(textId);
+      dot.classList.remove('warn','err');
+      if(!ok){ dot.classList.add('warn'); }
+      txt.textContent = msg;
+    }
+
+    function setError(dotId, textId, msg){
+      const dot = byId(dotId);
+      const txt = byId(textId);
+      dot.classList.remove('warn'); dot.classList.add('err');
+      txt.textContent = msg;
+    }
+
+    function renderDaily(items, pretty, rawDate){
+      const list = byId('daily-list');
+      const dd = byId('daily-date');
+      dd.textContent = pretty ? `• ${pretty}` : '';
+      list.innerHTML = '';
+
+      if(!items || !items.length){
+        byId('daily-list').hidden = true;
+        byId('daily-fallback').hidden = false;
+        setStatus('daily-dot','daily-status', false, 'Showing ClubReady fallback');
+        return;
+      }
+
+      for(const it of items){
+        // Defensive key mapping (support multiple shapes)
+        const cls = tidyClass(it.className || it.name || it.title || it.type || 'Class');
+        const tme = to12hNoSpace(it.time || it.startTime || it.start || it.startsAt || '');
+        const tch = tidyTeacher(it.teacher || it.instructor || it.coach || '');
+        const loc = safe(it.room || it.location || '');
+        const chips = [];
+        if(loc) chips.push(`Room: ${loc}`);
+        if(it.heat || it.heated || /hot/i.test(cls)) chips.push('Heated');
+        if(it.lengthMins || it.duration){
+          const mins = it.lengthMins || it.duration;
+          chips.push(`${mins} min`);
+        }
+
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+          <div class="time">${tme || '--'}</div>
+          <div>
+            <div class="class-name">${cls}</div>
+            <div class="teacher">${tch ? 'with ' + tch : ''}</div>
+          </div>
+          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+        `;
+        list.appendChild(row);
+      }
+
+      byId('daily-fallback').hidden = true;
+      byId('daily-list').hidden = false;
+      setStatus('daily-dot','daily-status', true, 'Live from Cloudflare');
+    }
+
+    function renderWeekly(weekObj){
+      const grid = byId('week-grid');
+      grid.innerHTML = '';
+
+      const order = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      let foundAny = false;
+
+      // Support either an object keyed by weekday, or an array with day fields
+      let byDay = {};
+      if(Array.isArray(weekObj)){
+        weekObj.forEach(it=>{
+          const d = titleCase(it.day || it.weekday || '');
+          if(!byDay[d]) byDay[d] = [];
+          byDay[d].push(it);
+        });
+      }else{
+        byDay = weekObj || {};
+      }
+
+      for(const day of order){
+        const list = byDay[day] || [];
+        if(list.length) foundAny = true;
+
+        const col = document.createElement('div');
+        col.className = 'dow';
+        col.innerHTML = `<div class="hd">${day}</div>`;
+        if(list.length === 0){
+          col.innerHTML += `<div class="empty">No classes listed.</div>`;
+        }else{
+          list.sort((a,b)=>{
+            const ta = safe(a.time || a.start || a.startTime);
+            const tb = safe(b.time || b.start || b.startTime);
+            return ta.localeCompare(tb);
+          });
+          for(const it of list){
+            const cls = tidyClass(it.className || it.name || it.title || it.type || 'Class');
+            const tme = to12hNoSpace(it.time || it.startTime || it.start || '');
+            const tch = tidyTeacher(it.teacher || it.instructor || '');
+            const item = document.createElement('div');
+            item.className = 'it';
+            item.innerHTML = `
+              <span class="tiny-time">${tme || '--'}</span>
+              <div style="display:grid; gap:2px;">
+                <strong>${cls}</strong>
+                <span class="teacher">${tch ? 'with ' + tch : ''}</span>
+              </div>
+            `;
+            col.appendChild(item);
+          }
+        }
+        grid.appendChild(col);
+      }
+
+      if(!foundAny){
+        byId('week-grid').hidden = true;
+        byId('weekly-fallback').hidden = false;
+        setStatus('weekly-dot','weekly-status', false, 'Showing ClubReady fallback');
+      }else{
+        byId('weekly-fallback').hidden = true;
+        byId('week-grid').hidden = false;
+        setStatus('weekly-dot','weekly-status', true, 'Live from Cloudflare');
+      }
+    }
+
+    async function loadDaily(){
+      try{
+        const r = await fetch(DAILY_ENDPOINT, {cache:'no-store'});
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        // Expected shapes:
+        // { ok, date, pretty, items: [...] }
+        // OR direct array
+        const items = Array.isArray(data) ? data : (data.items || []);
+        renderDaily(items, data.pretty || '', data.date || '');
+        // Set top status pill
+        const top = byId('last-upd');
+        const stamp = new Date().toLocaleString();
+        top.textContent = `Last updated: ${stamp}`;
+      }catch(err){
+        setError('daily-dot','daily-status', 'Could not load daily (fallback below)');
+        byId('daily-list').hidden = true;
+        byId('daily-fallback').hidden = false;
+      }
+    }
+
+    async function loadWeekly(){
+      try{
+        const r = await fetch(WEEKLY_ENDPOINT, {cache:'no-store'});
+        if(!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        // Accept either {week:{Sunday:[...]...}} or direct object/array
+        const week = data.week || data;
+        renderWeekly(week);
+      }catch(err){
+        setError('weekly-dot','weekly-status', 'Could not load weekly (fallback below)');
+        byId('week-grid').hidden = true;
+        byId('weekly-fallback').hidden = false;
+      }
+    }
+
+    // Kickoff
+    loadDaily();
+    loadWeekly();
+
+    // Optional: light auto-refresh (every 10 minutes)
+    setInterval(loadDaily, 10 * 60 * 1000);
+  </script>
 </body>
 </html>
