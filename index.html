@@ -1,218 +1,128 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>YogaSix West New York — Class Schedule</title>
-  <meta name="description" content="YogaSix West New York — Daily & Weekly Class Schedule" />
-  <style>
-    :root{
-      /* YogaSix-ish palette (approachable + fresh) */
-      --bg1:#e6f7f6;   /* pale teal */
-      --bg2:#f0e9ff;   /* lavender */
-      --ink:#0e1a1a;   /* deep charcoal */
-      --muted:#4b5563; /* slate */
-      --brand:#2bc2c2; /* aqua */
-      --brand-2:#8b7cf5; /* lavender accent */
-      --chip:#ecfeff;  /* very light */
-      --card:#ffffffee;/* glassy white */
-      --ok:#10b981;
-      --warn:#f59e0b;
-      --err:#ef4444;
-      --shadow:0 10px 30px rgba(16,24,40,.12);
-      --radius:20px;
-    }
-    /* Flowing gradient “breath” background */
-    body{
-      margin:0;
-      color:var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
-      background: radial-gradient(1200px 800px at 15% 10%, var(--bg1), transparent 60%),
-                  radial-gradient(1200px 900px at 85% 20%, var(--bg2), transparent 60%),
-                  radial-gradient(1000px 700px at 50% 110%, #fff, transparent 60%);
-      min-height:100svh;
-      overflow-x:hidden;
-    }
-    .bg-anim{
-      position:fixed; inset: -20vmax; z-index:-1; pointer-events:none;
-      background: radial-gradient(40vmax 30vmax at 20% 30%, rgba(43,194,194,.25), transparent 60%),
-                  radial-gradient(35vmax 25vmax at 80% 40%, rgba(139,124,245,.22), transparent 60%);
-      filter: blur(40px);
-      animation: breathe 12s ease-in-out infinite alternate;
-    }
-    @keyframes breathe{
-      0%{ transform: translate3d(0,0,0) scale(1);}
-      100%{ transform: translate3d(2vmax,-2vmax,0) scale(1.04);}
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>YogaSix West New York — Schedule</title>
+<meta name="description" content="Daily & Weekly class schedule for YogaSix West New York."/>
 
-    header{
-      padding:28px 20px 10px;
-    }
-    .wrap{
-      max-width:1100px; margin:0 auto; padding:0 16px 60px;
-    }
-    .brand-row{
-      display:flex; gap:16px; align-items:center; justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .logo{
-      display:flex; align-items:center; gap:14px;
-      font-weight:800; letter-spacing:.4px; font-size:22px;
-    }
-    .logo .dot{
-      width:28px; height:28px; border-radius:50%;
-      background:conic-gradient(from 120deg, var(--brand), var(--brand-2));
-      box-shadow: 0 0 0 4px #fff7, 0 6px 18px #0001;
-    }
-    .pill{
-      border-radius:999px; padding:8px 14px; background:#ffffffaa; backdrop-filter: blur(6px);
-      border:1px solid #ffffff; font-size:13px; color:var(--muted);
-    }
-    h1{
-      margin:8px 0 20px; font-size: clamp(26px, 2.4vw, 34px);
-      line-height:1.15; letter-spacing:.2px;
-    }
-    .sub{
-      color:var(--muted); margin-top:-10px; margin-bottom:22px; font-size:15px;
-    }
+<!-- Fonts: YogaSix-friendly (League Spartan for headings, Montserrat for body) -->
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
-    .grid{
-      display:grid; gap:22px;
-      grid-template-columns: 1fr;
-    }
-    @media (min-width:980px){
-      .grid{ grid-template-columns: 1.2fr .8fr; }
-    }
+<style>
+:root{
+  --ink:#0b1b1b;
+  --muted:#52606d;
+  --brand:#22c7c7;      /* Y6 aqua */
+  --accent:#8a7cf6;     /* lavender accent */
+  --chip:#e8fbfd;
+  --card:#ffffff;
+  --ring:#d9ecff;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(16,24,40,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  color:var(--ink);
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  background:
+    radial-gradient(1200px 800px at 10% -10%, #e9fbfa, transparent 60%),
+    radial-gradient(1200px 900px at 95% 0%, #f0eaff, transparent 60%),
+    linear-gradient(180deg, #ffffff, #f7fbfc 40%, #fff);
+  min-height:100svh;
+}
+.header{
+  max-width:1000px; margin:0 auto; padding:28px 18px 10px;
+}
+.brand{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between;
+}
+.logo{
+  display:flex; align-items:center; gap:12px; font-family:"League Spartan", sans-serif;
+  font-weight:800; letter-spacing:.3px; font-size:22px;
+}
+.logo .dot{ width:28px; height:28px; border-radius:50%;
+  background:conic-gradient(from 120deg, var(--brand), var(--accent));
+  box-shadow:0 0 0 4px #fff7, 0 6px 18px #0001; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+  border-radius:12px; border:1px solid #e6ecf4; background:#fff; text-decoration:none; color:var(--ink);
+  font-weight:600; box-shadow: var(--shadow);
+}
+h1{
+  font-family:"League Spartan", sans-serif; font-weight:800; letter-spacing:.3px;
+  margin:14px 0 6px; font-size: clamp(28px, 4vw, 38px);
+}
+.sub{ color:var(--muted); margin:0 0 18px; }
 
-    .card{
-      background:var(--card);
-      border:1px solid #ffffffd9;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .card > .head{
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-      padding:16px 18px; border-bottom:1px solid #eef2f7;
-      background:linear-gradient(180deg,#ffffffaa,#ffffff80);
-      backdrop-filter: blur(6px);
-    }
-    .head h2{
-      margin:0; font-size:18px; letter-spacing:.3px;
-      display:flex; align-items:center; gap:10px;
-    }
-    .status{
-      display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted);
-    }
-    .dot-sm{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 0 4px #10b98122;}
-    .warn{ background:var(--warn); box-shadow:0 0 0 4px #f59e0b22;}
-    .err{ background:var(--err); box-shadow:0 0 0 4px #ef444422;}
+.container{ max-width:1000px; margin:0 auto; padding:0 18px 80px; }
 
-    .body{ padding:14px 14px 18px; }
+.card{
+  background:var(--card); border-radius:var(--radius); border:1px solid #fff;
+  box-shadow:var(--shadow); overflow:hidden; margin-bottom:18px;
+}
+.card .hd{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:14px 16px; border-bottom:1px solid #edf2f7; background:linear-gradient(180deg,#ffffff,#f9fbff);
+}
+.card .hd h2{
+  font-family:"League Spartan",sans-serif; font-weight:800; letter-spacing:.2px; margin:0; font-size:20px;
+}
+.pill{ font-size:12px; color:var(--muted); background:#ffffffd9; border:1px solid #eef2f7; padding:6px 10px; border-radius:999px; }
+.body{ padding:14px 14px 18px; }
 
-    /* Daily list */
-    .list{
-      display:flex; flex-direction:column; gap:10px;
-    }
-    .row{
-      display:grid; gap:12px; align-items:center;
-      grid-template-columns: auto 1fr auto;
-      background: #fff; border:1px solid #eef2f7; border-radius:14px; padding:12px 14px;
-    }
-    .time{
-      font-variant-numeric: tabular-nums; font-weight:700; letter-spacing:.2px;
-      padding:6px 10px; border-radius:999px; background:var(--chip); border:1px dashed #d4f3f4;
-    }
-    .class-name{ font-weight:700; }
-    .teacher{ color:var(--muted); font-size:13px;}
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; }
-    .chip{
-      font-size:12px; padding:6px 10px; border-radius:999px;
-      background: linear-gradient(180deg,#e9fcff,#eef2ff);
-      border:1px solid #e8eefb;
-    }
+.list{ display:flex; flex-direction:column; gap:10px; }
+.row{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center;
+      background:#fff; border:1px solid #eef2f7; border-radius:14px; padding:12px 14px; }
+.time{ font-variant-numeric: tabular-nums; font-weight:700;
+       padding:6px 10px; border-radius:999px; background:var(--chip); border:1px dashed #cceef2; }
+.cls{ font-weight:700; }
+.tch{ color:var(--muted); font-size:13px; }
+.chips{ display:flex; gap:8px; flex-wrap:wrap; }
+.chip{ font-size:12px; padding:6px 10px; border-radius:999px; background:#f6f9ff; border:1px solid var(--ring); }
 
-    /* Weekly grid */
-    .week{
-      display:grid; gap:10px;
-      grid-template-columns: repeat(7, 1fr);
-    }
-    @media (max-width:900px){
-      .week{ grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width:560px){
-      .week{ grid-template-columns: 1fr; }
-    }
-    .dow{
-      background:#fff; border:1px solid #eef2f7; border-radius:16px; overflow:hidden;
-      display:flex; flex-direction:column; min-height:140px;
-    }
-    .dow .hd{
-      padding:10px 12px; font-weight:700; background:linear-gradient(180deg,#f8fafc,#fff);
-      border-bottom:1px solid #eef2f7; display:flex; align-items:center; gap:8px;
-    }
-    .dow .it{
-      display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px dashed #f0f4f9;
-    }
-    .dow .it:last-child{ border-bottom:0; }
-    .tiny-time{
-      font-size:12px; font-variant-numeric: tabular-nums;
-      padding:4px 8px; border-radius:999px; background:#f8feff; border:1px solid #e6f6f7;
-    }
-    .empty{
-      padding:18px; color:var(--muted); font-size:14px;
-    }
+.week{ display:grid; gap:10px; grid-template-columns:1fr; } /* stacked by design */
+.dow{ background:#fff; border:1px solid #eef2f7; border-radius:14px; overflow:hidden; }
+.dow .dh{ padding:10px 12px; font-weight:700; background:linear-gradient(180deg,#f8fafc,#fff); border-bottom:1px solid #eef2f7; }
+.dow .it{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px dashed #eff3f9; }
+.dow .it:last-child{ border-bottom:0; }
+.tiny{ font-size:12px; font-variant-numeric:tabular-nums; padding:4px 8px; border-radius:999px; background:#f6feff; border:1px solid #e6f6f7; }
+.empty{ padding:14px; color:var(--muted); font-size:14px; }
 
-    /* Fallback iframe wrapper (styled so it still looks nice) */
-    .iframe-wrap{
-      border-radius:16px; overflow:hidden; border:1px solid #eef2f7; background:#fff; box-shadow: var(--shadow);
-    }
-    iframe{ display:block; width:100%; border:0; }
-
-    footer{
-      margin-top:26px; color:var(--muted); font-size:12px; text-align:center;
-    }
-    a.btn{
-      display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
-      border-radius:12px; border:1px solid #e6eaf2; background:#fff; text-decoration:none; color:var(--ink);
-      font-size:14px; box-shadow: var(--shadow);
-    }
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; }
-  </style>
+.fallback{ border-radius:14px; overflow:hidden; border:1px solid #eef2f7; background:#fff; box-shadow: var(--shadow); }
+iframe{ display:block; width:100%; border:0; }
+.footer{ max-width:1000px; margin:0 auto; padding:18px; text-align:center; color:var(--muted); font-size:12px; }
+.status-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; vertical-align:middle; margin-right:8px; background:#10b981; box-shadow:0 0 0 4px #10b98122; }
+.status-warn{ background:#f59e0b; box-shadow:0 0 0 4px #f59e0b22; }
+</style>
 </head>
 <body>
-  <div class="bg-anim" aria-hidden="true"></div>
-
-  <header class="wrap">
-    <div class="brand-row">
-      <div class="logo">
-        <span class="dot"></span>
-        <span>YogaSix West New York</span>
-      </div>
-      <div class="actions">
+  <header class="header">
+    <div class="brand">
+      <div class="logo"><span class="dot"></span><span>YogaSix West New York</span></div>
+      <div>
         <a class="btn" href="https://members.yogasix.com/studios/yogasix-west-new-york" target="_blank" rel="noopener">Book a Class</a>
-        <span id="last-upd" class="pill">Loading status…</span>
+        <span id="last-upd" class="pill">Loading…</span>
       </div>
     </div>
     <h1>Daily & Weekly Schedule</h1>
-    <p class="sub">Clean, readable, and on-brand. The list below refreshes from your Cloudflare Worker and falls back to ClubReady if needed.</p>
+    <p class="sub">Stacked, readable, and on-brand. Pulls from your Cloudflare Worker and falls back to ClubReady if JSON is unavailable.</p>
   </header>
 
-  <main class="wrap grid">
+  <main class="container">
     <!-- DAILY -->
     <section class="card" id="daily-card">
-      <div class="head">
+      <div class="hd">
         <h2>Today’s Classes <span id="daily-date"></span></h2>
-        <div class="status"><span class="dot-sm" id="daily-dot"></span><span id="daily-status">Loading…</span></div>
+        <span class="pill"><span class="status-dot" id="daily-dot"></span><span id="daily-status">Loading…</span></span>
       </div>
       <div class="body">
         <div id="daily-list" class="list" hidden></div>
-
-        <!-- Fallback -->
-        <div id="daily-fallback" class="iframe-wrap" hidden>
+        <div id="daily-fb" class="fallback" hidden>
           <iframe
             src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=8806E19DB49A71056BF278ACF86621C99D5AD8EDA3412CF0"
-            height="640" loading="lazy" title="Daily Schedule (Fallback)">
+            height="640" loading="lazy" title="Daily (ClubReady)">
           </iframe>
         </div>
       </div>
@@ -220,227 +130,99 @@
 
     <!-- WEEKLY -->
     <section class="card" id="weekly-card">
-      <div class="head">
+      <div class="hd">
         <h2>This Week</h2>
-        <div class="status"><span class="dot-sm" id="weekly-dot"></span><span id="weekly-status">Loading…</span></div>
+        <span class="pill"><span class="status-dot" id="weekly-dot"></span><span id="weekly-status">Loading…</span></span>
       </div>
       <div class="body">
         <div id="week-grid" class="week" hidden></div>
-
-        <!-- Fallback -->
-        <div id="weekly-fallback" class="iframe-wrap" hidden>
+        <div id="weekly-fb" class="fallback" hidden>
           <iframe
             src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=07C3B1440216478A3711C5DFC09E56EDD66B98407764FC0A"
-            height="800" loading="lazy" title="Weekly Schedule (Fallback)">
+            height="900" loading="lazy" title="Weekly (ClubReady)">
           </iframe>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="wrap">
-    Built with ❤️ for our WNY community • Questions? Call (201) 361-5299 • 45 Riverwalk Pl, West New York, NJ
-  </footer>
+  <div class="footer">Questions? (201) 361-5299 • 45 Riverwalk Pl, West New York, NJ</div>
 
-  <script>
-    // === CONFIG ===
-    const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
-    const DAILY_ENDPOINT   = WORKER_BASE + "/daily.json";   // from your Worker 'endpoints'
-    const WEEKLY_ENDPOINT  = WORKER_BASE + "/weekly.json";  // if your worker doesn't expose this yet, the UI will iframe-fallback
+<script>
+const WORKER = "https://yogasix-schedule.kate-espinal.workers.dev";
+const DAILY  = WORKER + "/daily.json";
+const WEEKLY = WORKER + "/weekly.json";
 
-    // === Utilities ===
-    const byId = id => document.getElementById(id);
-    const safe = v => (v ?? "").toString().trim();
-    const titleCase = s => safe(s).toLowerCase()
-      .replace(/\b([a-z])/g, m => m.toUpperCase())
-      .replace(/\s+/g, ' ')
-      .replace(/\s-\s/g, ' – ');
-    const tidyClass = s => titleCase(s).replace(/\s{2,}/g,' ');
-    const tidyTeacher = s => titleCase(s).replace(/\bYtt\b/,'YTT');
+const $ = (id)=>document.getElementById(id);
+const title = s => (s||"").toLowerCase().replace(/\b([a-z])/g,m=>m.toUpperCase()).replace(/\s+/g," ").trim();
 
-    // 6:00AM format (no space before AM/PM)
-    function to12hNoSpace(dateOrStr){
-      const t = safe(dateOrStr);
-      // If we got 'HH:MM' try to parse quickly
-      const m = t.match(/^(\d{1,2}):(\d{2})/);
-      let hours, minutes;
-      if(m){ hours = +m[1]; minutes = +m[2]; }
-      else{
-        const d = new Date(dateOrStr);
-        if(!isNaN(d)) { hours = d.getHours(); minutes = d.getMinutes(); }
-        else { return t; }
-      }
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-      return `${hours}:${String(minutes).padStart(2,'0')}${ampm}`;
-    }
+function okStatus(dotId, textId, msg){
+  $(dotId).classList.remove("status-warn");
+  $(textId).textContent = msg;
+}
+function warnStatus(dotId, textId, msg){
+  $(dotId).classList.add("status-warn");
+  $(textId).textContent = msg;
+}
 
-    function setStatus(dotId, textId, ok=true, msg="OK"){
-      const dot = byId(dotId);
-      const txt = byId(textId);
-      dot.classList.remove('warn','err');
-      if(!ok){ dot.classList.add('warn'); }
-      txt.textContent = msg;
-    }
+function renderDaily(payload){
+  const pretty = payload.pretty || "";
+  const items = Array.isArray(payload.items) ? payload.items : [];
+  $("daily-date").textContent = pretty ? "• " + pretty : "";
 
-    function setError(dotId, textId, msg){
-      const dot = byId(dotId);
-      const txt = byId(textId);
-      dot.classList.remove('warn'); dot.classList.add('err');
-      txt.textContent = msg;
-    }
+  if (!items.length){
+    $("daily-list").hidden = true;
+    $("daily-fb").hidden = false;
+    warnStatus("daily-dot","daily-status","Showing ClubReady fallback");
+    return;
+  }
 
-    function renderDaily(items, pretty, rawDate){
-      const list = byId('daily-list');
-      const dd = byId('daily-date');
-      dd.textContent = pretty ? `• ${pretty}` : '';
-      list.innerHTML = '';
+  const list = $("daily-list");
+  list.innerHTML = "";
+  for (const it of items){
+    const time = it.time || "--";
+    const cls  = title((it.className||"").replace(/^Y6\s*/i,""));
+    const tch  = title(it.teacher||"");
+    const chips = [];
+    if (it.lengthMins) chips.push(`${it.lengthMins} min`);
+    if (it.heated) chips.push("Heated");
 
-      if(!items || !items.length){
-        byId('daily-list').hidden = true;
-        byId('daily-fallback').hidden = false;
-        setStatus('daily-dot','daily-status', false, 'Showing ClubReady fallback');
-        return;
-      }
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `
+      <div class="time">${time}</div>
+      <div><div class="cls">${cls||"Class"}</div><div class="tch">${tch?("with "+tch):""}</div></div>
+      <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
+    `;
+    list.appendChild(row);
+  }
+  $("daily-fb").hidden = true;
+  $("daily-list").hidden = false;
+  okStatus("daily-dot","daily-status","Live from Cloudflare");
+}
 
-      for(const it of items){
-        // Defensive key mapping (support multiple shapes)
-        const cls = tidyClass(it.className || it.name || it.title || it.type || 'Class');
-        const tme = to12hNoSpace(it.time || it.startTime || it.start || it.startsAt || '');
-        const tch = tidyTeacher(it.teacher || it.instructor || it.coach || '');
-        const loc = safe(it.room || it.location || '');
-        const chips = [];
-        if(loc) chips.push(`Room: ${loc}`);
-        if(it.heat || it.heated || /hot/i.test(cls)) chips.push('Heated');
-        if(it.lengthMins || it.duration){
-          const mins = it.lengthMins || it.duration;
-          chips.push(`${mins} min`);
-        }
+function renderWeekly(payload){
+  const week = payload.week || {};
+  const grid = $("week-grid");
+  grid.innerHTML = "";
 
-        const row = document.createElement('div');
-        row.className = 'row';
-        row.innerHTML = `
-          <div class="time">${tme || '--'}</div>
-          <div>
-            <div class="class-name">${cls}</div>
-            <div class="teacher">${tch ? 'with ' + tch : ''}</div>
-          </div>
-          <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
-        `;
-        list.appendChild(row);
-      }
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  let any = false;
 
-      byId('daily-fallback').hidden = true;
-      byId('daily-list').hidden = false;
-      setStatus('daily-dot','daily-status', true, 'Live from Cloudflare');
-    }
+  for (const d of days){
+    const arr = week[d] || [];
+    if (arr.length) any = true;
 
-    function renderWeekly(weekObj){
-      const grid = byId('week-grid');
-      grid.innerHTML = '';
-
-      const order = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      let foundAny = false;
-
-      // Support either an object keyed by weekday, or an array with day fields
-      let byDay = {};
-      if(Array.isArray(weekObj)){
-        weekObj.forEach(it=>{
-          const d = titleCase(it.day || it.weekday || '');
-          if(!byDay[d]) byDay[d] = [];
-          byDay[d].push(it);
-        });
-      }else{
-        byDay = weekObj || {};
-      }
-
-      for(const day of order){
-        const list = byDay[day] || [];
-        if(list.length) foundAny = true;
-
-        const col = document.createElement('div');
-        col.className = 'dow';
-        col.innerHTML = `<div class="hd">${day}</div>`;
-        if(list.length === 0){
-          col.innerHTML += `<div class="empty">No classes listed.</div>`;
-        }else{
-          list.sort((a,b)=>{
-            const ta = safe(a.time || a.start || a.startTime);
-            const tb = safe(b.time || b.start || b.startTime);
-            return ta.localeCompare(tb);
-          });
-          for(const it of list){
-            const cls = tidyClass(it.className || it.name || it.title || it.type || 'Class');
-            const tme = to12hNoSpace(it.time || it.startTime || it.start || '');
-            const tch = tidyTeacher(it.teacher || it.instructor || '');
-            const item = document.createElement('div');
-            item.className = 'it';
-            item.innerHTML = `
-              <span class="tiny-time">${tme || '--'}</span>
-              <div style="display:grid; gap:2px;">
-                <strong>${cls}</strong>
-                <span class="teacher">${tch ? 'with ' + tch : ''}</span>
-              </div>
-            `;
-            col.appendChild(item);
-          }
-        }
-        grid.appendChild(col);
-      }
-
-      if(!foundAny){
-        byId('week-grid').hidden = true;
-        byId('weekly-fallback').hidden = false;
-        setStatus('weekly-dot','weekly-status', false, 'Showing ClubReady fallback');
-      }else{
-        byId('weekly-fallback').hidden = true;
-        byId('week-grid').hidden = false;
-        setStatus('weekly-dot','weekly-status', true, 'Live from Cloudflare');
-      }
-    }
-
-    async function loadDaily(){
-      try{
-        const r = await fetch(DAILY_ENDPOINT, {cache:'no-store'});
-        if(!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-        // Expected shapes:
-        // { ok, date, pretty, items: [...] }
-        // OR direct array
-        const items = Array.isArray(data) ? data : (data.items || []);
-        renderDaily(items, data.pretty || '', data.date || '');
-        // Set top status pill
-        const top = byId('last-upd');
-        const stamp = new Date().toLocaleString();
-        top.textContent = `Last updated: ${stamp}`;
-      }catch(err){
-        setError('daily-dot','daily-status', 'Could not load daily (fallback below)');
-        byId('daily-list').hidden = true;
-        byId('daily-fallback').hidden = false;
-      }
-    }
-
-    async function loadWeekly(){
-      try{
-        const r = await fetch(WEEKLY_ENDPOINT, {cache:'no-store'});
-        if(!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-        // Accept either {week:{Sunday:[...]...}} or direct object/array
-        const week = data.week || data;
-        renderWeekly(week);
-      }catch(err){
-        setError('weekly-dot','weekly-status', 'Could not load weekly (fallback below)');
-        byId('week-grid').hidden = true;
-        byId('weekly-fallback').hidden = false;
-      }
-    }
-
-    // Kickoff
-    loadDaily();
-    loadWeekly();
-
-    // Optional: light auto-refresh (every 10 minutes)
-    setInterval(loadDaily, 10 * 60 * 1000);
-  </script>
-</body>
-</html>
+    const box = document.createElement("div");
+    box.className = "dow";
+    box.innerHTML = `<div class="dh">${d}</div>`;
+    if (!arr.length){
+      box.innerHTML += `<div class="empty">No classes listed.</div>`;
+    } else {
+      for (const it of arr){
+        const t = it.time || "--";
+        const cls = title((it.className||"").replace(/^Y6\s*/i,""));
+        const tch = title(it.teacher||"");
+        const row = document.createElement("div");
+        row.className = "it";
+        row.innerHTML = `<span class="tiny">${t}</span><div><div class="cls">${cls}</div><div class="tc
