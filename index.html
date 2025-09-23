@@ -129,135 +129,125 @@
     </section>
   </div>
 
-  <script>
-    // ========= CONFIG =========
-    const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
+  <script><script>
+  // ========= CONFIG =========
+  const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
 
-    // Small helpers
-    const $ = (sel, el=document) => el.querySelector(sel);
-    const el = (tag, attrs={}) => Object.assign(document.createElement(tag), attrs);
+  // Small helpers
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const el = (tag, attrs={}) => Object.assign(document.createElement(tag), attrs);
 
-    function datePretty(d=new Date()){
-      return d.toLocaleDateString("en-US", { weekday:"long", month:"short", day:"numeric" });
+  function datePretty(d=new Date()){
+    return d.toLocaleDateString("en-US", { weekday:"long", month:"short", day:"numeric" });
+  }
+  function todayISO(){
+    const d = new Date();
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function startOfWeekSundayISO(d=new Date()){
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dow = t.getUTCDay();               // 0..6 where 0 = Sunday
+    t.setUTCDate(t.getUTCDate() - dow);      // back to Sunday
+    const y=t.getUTCFullYear(), m=String(t.getUTCMonth()+1).padStart(2,'0'), day=String(t.getUTCDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { headers: { "accept":"application/json" }});
+    if(!r.ok) throw new Error(`Fetch failed ${r.status} for ${path}`);
+    return r.json();
+  }
+
+  function rowNode({ time, title, teacher }){
+    const row = el("div", { className:"row" });
+    row.append(el("div", { className:"time", textContent: time || "" }));
+    const info = el("div", { className:"info" });
+    info.append(el("span", { className:"titleTxt", textContent: title || "" }));
+    if (teacher){
+      info.append(el("span", { className:"sep", textContent:"–" }));
+      info.append(el("span", { className:"teacher", textContent: teacher }));
     }
-    function todayISO(){
-      const d = new Date();
-      const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-      return `${y}-${m}-${day}`;
+    row.append(info);
+    return row;
+  }
+
+  function dayCardNode({ label, date, items }){
+    const card = el("div", { className:"day-card" });
+    const head = el("div", { className:"day-head" });
+    head.append(el("span", { textContent: label || "" }));
+    if(date) head.append(el("span", { className:"date", textContent: date }));
+    card.append(head);
+
+    if(!items || items.length === 0){
+      card.append(el("div", { className:"empty", textContent: "No classes" }));
+    } else {
+      const list = el("div", { className:"list" });
+      items.forEach(item => list.append(rowNode(item)));
+      card.append(list);
     }
+    return card;
+  }
 
-    async function fetchJSON(path){
-      const r = await fetch(path, { headers: { "accept":"application/json" }});
-      if(!r.ok) throw new Error(`Fetch failed ${r.status}`);
-      return r.json();
+  // Render Today (unchanged)
+  async function renderToday(){
+    $("#todayDate").textContent = datePretty(new Date());
+    const data = await fetchJSON(`${WORKER_BASE}/daily.json?date=${todayISO()}`);
+    const list = $("#todayList");
+    list.innerHTML = "";
+    const items = (data && data.items) || [];
+    if(items.length === 0){
+      list.append(el("div", { className:"empty", textContent:"No classes found today." }));
+      return;
     }
+    items.forEach(i => list.append(rowNode(i)));
+  }
 
-    function rowNode({ time, title, teacher }){
-      const row = el("div", { className:"row" });
-      row.append(el("div", { className:"time", textContent: time || "" }));
-      const info = el("div", { className:"info" });
-      info.append(el("span", { className:"titleTxt", textContent: title || "" }));
-      if (teacher){
-        info.append(el("span", { className:"sep", textContent:"–" }));
-        info.append(el("span", { className:"teacher", textContent: teacher }));
-      }
-      row.append(info);
-      return row;
+  // Render Week — only use weekly endpoint (no fallback to daily)
+  async function renderWeek(){
+    const start = startOfWeekSundayISO(new Date());       // required by your worker
+    const payload = await fetchJSON(`${WORKER_BASE}/week.json?start=${start}`);
+
+    // Accept either an array or { days: [...] } — but strictly from /week.json
+    const days = Array.isArray(payload) ? payload : (Array.isArray(payload?.days) ? payload.days : []);
+    const grid = $("#weekGrid");
+    grid.innerHTML = "";
+
+    // Always show Sunday → Saturday
+    const labels = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+    // If worker doesn't guarantee order, place by index; otherwise, iterate and fill.
+    const byIndex = new Array(7).fill(null);
+    // Try to find a reliable index property; otherwise rely on natural order.
+    days.forEach((d, idx) => {
+      // Prefer provided index/dow when present
+      const i = Number.isInteger(d.index) ? d.index
+              : Number.isInteger(d.dow)   ? d.dow
+              : idx % 7;
+      byIndex[i] = d;
+    });
+
+    for (let i=0; i<7; i++){
+      const d = byIndex[i] || {};
+      const items = d.items || [];
+      const label = d.head || labels[i];
+      const pretty = d.pretty || d.datePretty || d.date || "";
+      grid.append(dayCardNode({ label, date: pretty, items }));
     }
+  }
 
-    function dayCardNode({ label, date, items }){
-      const card = el("div", { className:"day-card" });
-      const head = el("div", { className:"day-head" });
-      head.append(el("span", { textContent: label || "" }));
-      if(date) head.append(el("span", { className:"date", textContent: date }));
-      card.append(head);
-
-      if(!items || items.length === 0){
-        card.append(el("div", { className:"empty", textContent: "No classes" }));
-      } else {
-        const list = el("div", { className:"list" });
-        items.forEach(item => list.append(rowNode(item)));
-        card.append(list);
-      }
-      return card;
+  (async function init(){
+    try { await renderToday(); }
+    catch(e){
+      $("#todayList").innerHTML = `<div class="empty">Could not load today’s classes.</div>`;
+      console.error(e);
     }
-
-    // Render Today
-    async function renderToday(){
-      $("#todayDate").textContent = datePretty(new Date());
-      const data = await fetchJSON(`${WORKER_BASE}/daily.json?date=${todayISO()}`);
-      const list = $("#todayList");
-      list.innerHTML = "";
-      const items = (data && data.items) || [];
-      if(items.length === 0){
-        list.append(el("div", { className:"empty", textContent:"No classes found today." }));
-        return;
-      }
-      items.forEach(i => list.append(rowNode(i)));
+    try { await renderWeek(); }
+    catch(e){
+      $("#weekGrid").innerHTML = `<div class="empty">Could not load weekly schedule.</div>`;
+      console.error(e);
     }
-
-    // Render Week (handles either compact or daily-fallback shapes)
-    async function renderWeek(){
-      const data = await fetchJSON(`${WORKER_BASE}/week.json`);
-      const grid = $("#weekGrid");
-      grid.innerHTML = "";
-
-      // Two possible shapes coming from the Worker:
-      // 1) [{date, pretty, items}]  (daily fallback)
-      // 2) [{head, items}]          (publish parse)
-      const makeLabel = (idx) => ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][idx];
-
-      if(Array.isArray(data) && data.length){
-        // Guess if it’s fallback (has date/pretty) or compact (has head)
-        const fallback = "date" in data[0] || "pretty" in data[0];
-
-        if (fallback){
-          // Ensure Sunday→Saturday sort
-          const byDow = {};
-          data.forEach(d => {
-            const dt = new Date(d.date + "T00:00:00");
-            byDow[dt.getUTCDay()] = d;
-          });
-          for(let dow=0; dow<7; dow++){
-            const d = byDow[dow] || { items: [] };
-            const label = makeLabel(dow);
-            const card = dayCardNode({
-              label,
-              date: d.pretty || "",
-              items: d.items || []
-            });
-            grid.append(card);
-          }
-        } else {
-          // Already 1..7 with heads; show them as-is
-          data.forEach((d, i) => {
-            const card = dayCardNode({
-              label: d.head || makeLabel(i),
-              date: "",
-              items: d.items || []
-            });
-            grid.append(card);
-          });
-        }
-      } else {
-        grid.append(el("div", { className:"empty", textContent:"No weekly data." }));
-      }
-    }
-
-    (async function init(){
-      try {
-        await renderToday();
-      } catch(e){
-        $("#todayList").innerHTML = `<div class="empty">Could not load today’s classes.</div>`;
-        console.error(e);
-      }
-      try {
-        await renderWeek();
-      } catch(e){
-        $("#weekGrid").innerHTML = `<div class="empty">Could not load weekly schedule.</div>`;
-        console.error(e);
-      }
-    })();
-  </script>
+  })();
+</script>
 </body>
 </html>
