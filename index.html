@@ -1,253 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>YogaSix West New York — Live Schedule</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YogaSix West New York • Live Class Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg1:#8ed1e6; --bg2:#c1b6f8; --panel:#edf3f7; --panel-border:#dde7ee;
-      --chip:#f6fbff; --ink:#1c2a37; --ink-dim:#4f6b7c; --accent:#49c6e5;
-      --accent-2:#9a8cff; --glow: 0 10px 30px rgba(34,49,63,.15);
-      --radius: 16px; --radius-lg: 20px;
-    }
+<style>
+  :root{
+    --bg1:#a8d8e9; /* sky */
+    --bg2:#d7c5f2; /* lavender */
+    --card:#f5f8fb;
+    --ink:#1b2430;
+    --muted:#6c7a89;
+    --pill:#eef3f8;
+    --brand:#30b3b3;
+    --accent:#6a7dfc;
+    --shadow: 0 10px 30px rgba(0,0,0,.12);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    color:var(--ink);
+    background:
+      /* big gradient wash */
+      radial-gradient(1200px 600px at 15% -10%, #c6f1f0 0%, transparent 55%),
+      radial-gradient(900px 500px at 85% -20%, #f3e8ff 0%, transparent 60%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+    /* subtle yoga icon pattern (inline SVG) */
+    --pat: url("data:image/svg+xml;utf8,\
+      <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140' opacity='.12'>\
+        <!-- lotus -->\
+        <g fill='none' stroke='%23ffffff' stroke-width='2'>\
+          <path d='M70 38c10 8 18 17 18 26 0 13-12 20-18 20s-18-7-18-20c0-9 8-18 18-26z'/>\
+          <path d='M70 84c8-2 16-6 22-13M70 84c-8-2-16-6-22-13'/>\
+        </g>\
+        <!-- rolled mat -->\
+        <g stroke='%23ffffff' stroke-width='2' fill='none' transform='translate(80 85)'>\
+          <rect x='0' y='0' rx='6' ry='6' width='44' height='14'/>\
+          <circle cx='38' cy='7' r='5'/>\
+        </g>\
+        <!-- chakra rings -->\
+        <g fill='none' stroke='%23ffffff' stroke-width='1.4' opacity='.8' transform='translate(15 90)'>\
+          <circle cx='12' cy='12' r='10'/>\
+          <circle cx='12' cy='12' r='6'/>\
+        </g>\
+      </svg>");
+    background-image:
+      var(--pat),
+      radial-gradient(1200px 600px at 15% -10%, #c6f1f0 0%, transparent 55%),
+      radial-gradient(900px 500px at 85% -20%, #f3e8ff 0%, transparent 60%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+    background-size: 140px 140px, auto, auto, auto;
+  }
+  .wrap{max-width:1120px;margin:46px auto;padding:0 18px;}
 
-    /* Background: gradient + subtle yoga icons (data-URI SVG) */
-    body{
-      margin:0; font-family: "Outfit", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-      color:var(--ink); background: radial-gradient(1200px 600px at 20% 0%, var(--bg1) 0%, transparent 60%),
-                          radial-gradient(1200px 600px at 80% 0%, var(--bg2) 0%, transparent 60%), #a7c7f2;
-      min-height:100dvh;
-      /* yoga motif (lotus + mat + chakra) */
-      --svg: url("data:image/svg+xml;utf8,\
-        <svg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'>\
-          <g fill='none' stroke='white' stroke-opacity='.12' stroke-width='2'>\
-            <!-- lotus -->\
-            <path d='M110 58c-8 10-28 18-28 35 0 17 15 31 28 31s28-14 28-31c0-17-20-25-28-35z'/>\
-            <!-- rolled mat -->\
-            <path d='M40 150h90a12 12 0 0 1 0 24H64a12 12 0 0 1 0-24'/>\
-            <!-- chakra circles -->\
-            <circle cx='178' cy='162' r='22' />\
-            <circle cx='178' cy='162' r='10' />\
-          </g>\
-        </svg>");
-      background-image:
-        radial-gradient(1000px 800px at 50% 0%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 60%),
-        var(--svg);
-      background-size: auto, 220px 220px;
-      background-position: center top, center;
-      background-attachment: fixed, fixed;
-    }
+  .title{
+    text-align:center;
+    font-weight:800;
+    font-size:clamp(28px, 5vw, 44px);
+    letter-spacing:.4px;
+    margin:8px 0 6px;
+    color:#0f1a26;
+    text-shadow:0 2px 0 rgba(255,255,255,.4);
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:18px;
+  }
 
-    .wrap{ max-width:1180px; margin:32px auto 80px; padding:0 16px; }
-    .hero{ text-align:center; padding-top:20px; }
-    .title{ font-weight:700; font-size:clamp(28px, 5vw, 52px); letter-spacing:.5px; margin:0 0 4px; color:#fff; text-shadow:0 4px 24px rgba(0,0,0,.18); }
-    .subtitle{ color:#f7fbff; opacity:.9; font-weight:600; letter-spacing:.2px; }
+  .cta-row{
+    display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+    margin:8px 0 26px;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    background: linear-gradient(135deg, #74e0d6, #8ea6ff);
+    color:white; font-weight:700; text-decoration:none;
+    padding:12px 18px; border-radius:999px;
+    box-shadow: var(--shadow);
+    transition: transform .1s ease, filter .15s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+  .btn.secondary{ background: linear-gradient(135deg, #9fd2ff, #cca8ff); }
+  .btn.neutral{ background: linear-gradient(135deg, #ffd5a8, #ffa3bc); }
 
-    .cta-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin:18px 0 28px; }
-    .cta{
-      display:inline-flex; align-items:center; gap:10px; font-weight:600; padding:12px 18px; border-radius:999px;
-      background: linear-gradient(90deg, rgba(73,198,229,.16), rgba(154,140,255,.18));
-      color:#fff; text-decoration:none; backdrop-filter:saturate(120%) blur(6px);
-      box-shadow: var(--glow); border:1px solid rgba(255,255,255,.25);
-    }
-    .cta:hover{ transform:translateY(-1px); transition:transform .15s ease; }
+  .card{
+    background:rgba(245,248,251,.9);
+    border-radius:var(--radius);
+    box-shadow: var(--shadow);
+    margin:18px 0;
+    overflow:hidden;
+    backdrop-filter: blur(6px);
+  }
+  .card-head{
+    padding:16px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px dashed #dbe4ee;
+    color:#202b38;
+    background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.35));
+  }
+  .card-head h3{margin:0;font-size:18px}
+  .card-body{padding:14px 10px 10px}
 
-    .card{
-      background: var(--panel); border:1px solid var(--panel-border); border-radius: var(--radius-lg);
-      box-shadow: var(--glow);
-    }
-    .section{ margin-top:18px; }
-    .section-head{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:16px 18px; border-bottom:1px dashed #d9e6ef; color:var(--ink-dim); font-weight:700;
-    }
-    .section-sub{ font-weight:600; color:var(--ink-dim); }
-    .list{ padding:8px; }
-    .row{
-      display:flex; gap:18px; align-items:center; padding:16px;
-      border-radius:var(--radius); background:var(--chip); margin:10px; border:1px solid #e9f0f6;
-    }
-    .time{ font-weight:700; background:#fff; border:1px solid #e6eef5; border-radius:999px; padding:10px 14px; min-width:84px; text-align:center; }
-    .info{ display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; }
-    .titleTxt{ font-weight:700; }
-    .sep{ opacity:.55; }
-    .teacher{ font-weight:400; color:var(--ink-dim); }
+  /* row item */
+  .class-row{
+    display:flex; align-items:center; gap:18px;
+    padding:12px 12px;
+    border-radius:14px;
+    background:#f1f5fa;
+    margin:10px 8px;
+  }
+  .time-pill{
+    background:white; border:1px solid #e6edf5;
+    border-radius:999px; padding:10px 14px; font-weight:800;
+    min-width:92px; text-align:center; box-shadow: inset 0 1px 0 #fff;
+  }
+  .txt{flex:1; line-height:1.25}
+  .title-line{font-weight:800}
+  .teacher{ color:var(--muted); margin-left:2px; font-weight:600 }
+  .dash{ color:#90a0b2; margin:0 6px; font-weight:600 }
 
-    .week{
-      display:grid; gap:16px; padding:16px;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    @media (max-width: 900px){ .week{ grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 620px){ .week{ grid-template-columns: 1fr; } }
+  /* week grid */
+  .week-grid{
+    display:grid; gap:16px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 960px){
+    .week-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px){
+    .week-grid{ grid-template-columns: 1fr; }
+  }
+  .day-card{ background:#f4f7fb; border-radius:16px; padding:10px 10px 12px; box-shadow: inset 0 1px 0 #fff; }
+  .day-head{ display:flex; justify-content:space-between; align-items:baseline; padding:10px 8px 8px; border-bottom:1px dashed #dde6f1; }
+  .day-name{ font-weight:800 }
+  .day-date{ color:var(--muted); font-size:12px; font-weight:700 }
+  .day-body{ padding:6px 2px 4px; }
 
-    .day-card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:var(--radius-lg); overflow:hidden; box-shadow: var(--glow); }
-    .day-head{ font-weight:700; color:var(--ink-dim); padding:14px 16px; border-bottom:1px dashed #d9e6ef; display:flex; gap:8px; align-items:baseline; }
-    .day-head .date{ font-weight:600; color:#6b87a0; }
-    .empty{ padding:18px; color:#7a93a6; }
-    .muted{ color:#7a93a6; font-weight:600; }
-    .source{ font-size:12px; color:#7a93a6; }
-  </style>
+  .empty{ color:var(--muted); padding:16px; text-align:center; }
+
+  /* tiny lotus bullet for fun */
+  .lotus{
+    width:16px;height:16px; vertical-align:middle; margin: -2px 6px 0;
+    opacity:.6;
+  }
+</style>
 </head>
-
 <body>
   <div class="wrap">
-    <header class="hero">
-      <h1 class="title">YogaSix West New York</h1>
-      <div class="subtitle">Auto-updated from ClubReady</div>
+    <div class="title">YogaSix West New York</div>
+    <div class="subtitle">Auto-updated from ClubReady</div>
 
-      <div class="cta-row">
-        <a class="cta" href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank" rel="noopener">Book Intro Offer</a>
-        <a class="cta" href="tel:+12013615299">Call (201) 361-5299</a>
-        <a class="cta" href="https://maps.google.com/?q=YogaSix+West+New+York" target="_blank" rel="noopener">Get Directions</a>
-      </div>
-    </header>
+    <div class="cta-row">
+      <a class="btn" href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank" rel="noopener">Book Intro Offer</a>
+      <a class="btn secondary" href="tel:+12013615299">Call (201) 361-5299</a>
+      <a class="btn neutral" href="https://maps.google.com/?q=YogaSix+West+New+York" target="_blank" rel="noopener">Get Directions</a>
+    </div>
 
     <!-- Today -->
-    <section class="card section" id="todayCard">
-      <div class="section-head">
-        <div>Today’s Classes</div>
-        <div class="source" id="todayDate"></div>
+    <section class="card" id="todayCard">
+      <div class="card-head">
+        <h3>Today’s Classes</h3>
+        <div id="todayDate" class="day-date"></div>
       </div>
-      <div class="list" id="todayList">
-        <!-- rows injected -->
+      <div class="card-body" id="todayList">
+        <div class="empty">Loading…</div>
       </div>
     </section>
 
     <!-- Week -->
-    <section class="card section" id="weekCard">
-      <div class="section-head">
-        <div>This Week</div>
-        <div class="section-sub">Sunday → Saturday</div>
+    <section class="card">
+      <div class="card-head">
+        <h3>This Week</h3>
+        <div class="day-date">Sunday → Saturday</div>
       </div>
-      <div class="week" id="weekGrid">
-        <!-- day cards injected -->
+      <div class="card-body">
+        <div id="weekGrid" class="week-grid">
+          <!-- populated by JS -->
+        </div>
       </div>
     </section>
   </div>
 
-  <script><script>
-  // ========= CONFIG =========
+<script>
+  // ======= CONFIG =======
   const WORKER_BASE = "https://yogasix-schedule.kate-espinal.workers.dev";
 
-  // Small helpers
-  const $ = (sel, el=document) => el.querySelector(sel);
-  const el = (tag, attrs={}) => Object.assign(document.createElement(tag), attrs);
-
-  function datePretty(d=new Date()){
-    return d.toLocaleDateString("en-US", { weekday:"long", month:"short", day:"numeric" });
+  // ======= Helpers =======
+  const pad = n => String(n).padStart(2,'0');
+  function todayISO(d=new Date()){
+    const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+    return z.toISOString().slice(0,10);
   }
-  function todayISO(){
-    const d = new Date();
-    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
+  function sundayISO(d=new Date()){
+    const t = new Date(d);
+    t.setDate(t.getDate() - t.getDay());
+    return todayISO(t);
   }
-  function startOfWeekSundayISO(d=new Date()){
-    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const dow = t.getUTCDay();               // 0..6 where 0 = Sunday
-    t.setUTCDate(t.getUTCDate() - dow);      // back to Sunday
-    const y=t.getUTCFullYear(), m=String(t.getUTCMonth()+1).padStart(2,'0'), day=String(t.getUTCDate()).padStart(2,'0');
-    return `${y}-${m}-${day}`;
+  function el(tag, cls, txt){
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt != null) e.textContent = txt;
+    return e;
   }
 
-  async function fetchJSON(path){
-    const r = await fetch(path, { headers: { "accept":"application/json" }});
-    if(!r.ok) throw new Error(`Fetch failed ${r.status} for ${path}`);
-    return r.json();
-  }
+  function rowEl(item){
+    const row = el('div','class-row');
+    const pill = el('div','time-pill', item.time || '');
+    const txt = el('div','txt');
 
-  function rowNode({ time, title, teacher }){
-    const row = el("div", { className:"row" });
-    row.append(el("div", { className:"time", textContent: time || "" }));
-    const info = el("div", { className:"info" });
-    info.append(el("span", { className:"titleTxt", textContent: title || "" }));
-    if (teacher){
-      info.append(el("span", { className:"sep", textContent:"–" }));
-      info.append(el("span", { className:"teacher", textContent: teacher }));
-    }
-    row.append(info);
+    const line = el('div','title-line');
+    const title = el('span', null, item.title || '');
+    const dash = el('span','dash',' - ');
+    const teacher = el('span','teacher', item.teacher || '');
+
+    line.append(title, dash, teacher);
+    txt.append(line);
+    row.append(pill, txt);
     return row;
   }
 
-  function dayCardNode({ label, date, items }){
-    const card = el("div", { className:"day-card" });
-    const head = el("div", { className:"day-head" });
-    head.append(el("span", { textContent: label || "" }));
-    if(date) head.append(el("span", { className:"date", textContent: date }));
-    card.append(head);
-
-    if(!items || items.length === 0){
-      card.append(el("div", { className:"empty", textContent: "No classes" }));
-    } else {
-      const list = el("div", { className:"list" });
-      items.forEach(item => list.append(rowNode(item)));
-      card.append(list);
-    }
-    return card;
-  }
-
-  // Render Today (unchanged)
+  // ======= Render Today =======
   async function renderToday(){
-    $("#todayDate").textContent = datePretty(new Date());
-    const data = await fetchJSON(`${WORKER_BASE}/daily.json?date=${todayISO()}`);
-    const list = $("#todayList");
-    list.innerHTML = "";
-    const items = (data && data.items) || [];
-    if(items.length === 0){
-      list.append(el("div", { className:"empty", textContent:"No classes found today." }));
-      return;
+    try{
+      const r = await fetch(`${WORKER_BASE}/daily.json`, {cache:'no-store'});
+      const data = await r.json();
+      document.getElementById('todayDate').textContent =
+        new Date(data.date+'T00:00:00').toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+
+      const list = document.getElementById('todayList');
+      list.innerHTML = '';
+      if (!data.items || !data.items.length){
+        list.append(el('div','empty','No classes'));
+        return;
+      }
+      data.items.forEach(item => list.append(rowEl(item)));
+    } catch(e){
+      document.getElementById('todayList').innerHTML = `<div class="empty">Couldn’t load today’s classes.</div>`;
+      console.error(e);
     }
-    items.forEach(i => list.append(rowNode(i)));
   }
 
-  // Render Week — only use weekly endpoint (no fallback to daily)
+  // ======= Render Week =======
   async function renderWeek(){
-    const start = startOfWeekSundayISO(new Date());       // required by your worker
-    const payload = await fetchJSON(`${WORKER_BASE}/week.json?start=${start}`);
+    const start = sundayISO();
+    try{
+      const r = await fetch(`${WORKER_BASE}/week.json?start=${start}`, {cache:'no-store'});
+      const days = await r.json();
+      const grid = document.getElementById('weekGrid');
+      grid.innerHTML = '';
 
-    // Accept either an array or { days: [...] } — but strictly from /week.json
-    const days = Array.isArray(payload) ? payload : (Array.isArray(payload?.days) ? payload.days : []);
-    const grid = $("#weekGrid");
-    grid.innerHTML = "";
+      days.forEach(d => {
+        const card = el('div','day-card');
+        const head = el('div','day-head');
+        const l = el('div','day-name', d.head || (d.pretty?.split(',')[0] ?? ''));
+        const r = el('div','day-date', d.pretty?.includes(',') ? d.pretty.split(',').slice(1).join(', ').trim() : (d.pretty||''));
+        head.append(l,r);
 
-    // Always show Sunday → Saturday
-    const labels = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
-    // If worker doesn't guarantee order, place by index; otherwise, iterate and fill.
-    const byIndex = new Array(7).fill(null);
-    // Try to find a reliable index property; otherwise rely on natural order.
-    days.forEach((d, idx) => {
-      // Prefer provided index/dow when present
-      const i = Number.isInteger(d.index) ? d.index
-              : Number.isInteger(d.dow)   ? d.dow
-              : idx % 7;
-      byIndex[i] = d;
-    });
-
-    for (let i=0; i<7; i++){
-      const d = byIndex[i] || {};
-      const items = d.items || [];
-      const label = d.head || labels[i];
-      const pretty = d.pretty || d.datePretty || d.date || "";
-      grid.append(dayCardNode({ label, date: pretty, items }));
+        const body = el('div','day-body');
+        if (!d.items || !d.items.length){
+          body.append(el('div','empty','No classes'));
+        } else {
+          d.items.forEach(it => body.append(rowEl(it)));
+        }
+        card.append(head, body);
+        grid.append(card);
+      });
+    } catch(e){
+      document.getElementById('weekGrid').innerHTML = `<div class="empty" style="grid-column:1/-1">Couldn’t load weekly schedule.</div>`;
+      console.error(e);
     }
   }
 
-  (async function init(){
-    try { await renderToday(); }
-    catch(e){
-      $("#todayList").innerHTML = `<div class="empty">Could not load today’s classes.</div>`;
-      console.error(e);
-    }
-    try { await renderWeek(); }
-    catch(e){
-      $("#weekGrid").innerHTML = `<div class="empty">Could not load weekly schedule.</div>`;
-      console.error(e);
-    }
-  })();
+  renderToday();
+  renderWeek();
 </script>
 </body>
 </html>
