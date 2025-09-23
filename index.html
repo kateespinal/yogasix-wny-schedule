@@ -3,161 +3,109 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>YogaSix WNY — Schedule</title>
-
-<!-- YogaSix-friendly fonts -->
-<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@600;800&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-
+<title>YogaSix West New York — Schedule</title>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;900&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0b1b1b;
-  --muted:#586571;
-  --brand:#22c7c7;       /* Y6 aqua */
-  --accent:#8a7cf6;      /* lavender */
-  --chip:#e8fbfd;
-  --card:#fff;
-  --line:#eef2f7;
-  --radius:16px;
-  --shadow:0 10px 28px rgba(16,24,40,.12);
+  --brand:#22c7c7; --accent:#8a7cf6; --ink:#0b1b1b;
+  --card:#fff; --muted:#586571; --shadow:0 10px 28px rgba(0,0,0,.1);
 }
-*{box-sizing:border-box}
-html,body{margin:0}
 body{
-  color:var(--ink);
-  font-family:"Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-  background:
-    radial-gradient(1200px 800px at 8% -10%, #e9fbfa, transparent 60%),
-    radial-gradient(1200px 900px at 95% 0%, #f0eaff, transparent 60%),
-    linear-gradient(180deg, #ffffff, #f7fbfc 40%, #fff);
-  min-height:100svh;
+  margin:0; font-family:"Montserrat",sans-serif; color:var(--ink);
+  background:linear-gradient(135deg,#e7fdfd,#f5eaff);
+  overflow-x:hidden;
 }
-.wrap{max-width:920px; margin:0 auto; padding:24px 16px 64px;}
-
-.header{display:flex; align-items:center; gap:12px;}
+nav{display:flex;justify-content:center;gap:24px;padding:16px;font-weight:600;}
+nav a{text-decoration:none;color:var(--ink);position:relative;}
+nav a::after{content:"";position:absolute;left:0;bottom:-3px;width:100%;height:2px;background:var(--brand);transform:scaleX(0);transition:.3s;}
+nav a:hover::after{transform:scaleX(1);}
+header{text-align:center;padding:30px 16px 10px;}
 .logo{
-  display:flex; align-items:center; gap:10px; font-family:"League Spartan",sans-serif;
-  font-weight:800; letter-spacing:.2px; font-size:20px;
+  font-family:"League Spartan",sans-serif;font-size:36px;font-weight:900;
+  background:linear-gradient(90deg,var(--brand),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.dot{width:24px; height:24px; border-radius:50%; background:conic-gradient(from 120deg, var(--brand), var(--accent)); box-shadow:0 0 0 4px #fff7, 0 6px 18px #0001;}
+.lotus{position:fixed;width:100px;height:100px;fill:var(--accent);opacity:.15;z-index:-1;animation:float 20s linear infinite;}
+.lotus:nth-child(2){left:10%;top:20%;animation-duration:28s;}
+.lotus:nth-child(3){right:15%;top:40%;animation-duration:25s;}
+.lotus:nth-child(4){left:30%;bottom:20%;animation-duration:22s;}
+@keyframes float{from{transform:translateY(100vh) rotate(0);}to{transform:translateY(-120vh) rotate(360deg);}}
 
-h1{
-  font-family:"League Spartan",sans-serif; font-weight:800; letter-spacing:.3px;
-  margin:12px 0 8px; font-size: clamp(26px, 4vw, 34px);
-}
-.sub{margin:0 0 18px; color:var(--muted);}
-
-.card{background:var(--card); border-radius:var(--radius); border:1px solid #fff; box-shadow:var(--shadow); overflow:hidden; margin-top:16px;}
-.hd{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#f9fbff);}
-.hd h2{font-family:"League Spartan",sans-serif; font-weight:800; margin:0; font-size:18px;}
-.body{padding:14px 14px 18px;}
-
-.list{display:flex; flex-direction:column; gap:10px;}
-.row{display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px;}
-.time{font-variant-numeric:tabular-nums; font-weight:700; padding:6px 10px; border-radius:999px; background:var(--chip); border:1px dashed #cceef2;}
+.wrap{max-width:800px;margin:0 auto;padding:0 16px 60px;}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);margin-top:20px;overflow:hidden;}
+.card h2{margin:0;padding:14px 18px;font-family:"League Spartan";background:linear-gradient(90deg,#fff,#f7faff);}
+.body{padding:16px;}
+.list{display:flex;flex-direction:column;gap:12px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:12px;background:#fdfdfd;box-shadow:0 2px 6px rgba(0,0,0,.05);}
+.left{display:flex;flex-direction:column;}
+.time{font-weight:700;color:var(--brand);}
 .cls{font-weight:700;}
-.tch{color:var(--muted); font-size:13px;}
-.chips{display:flex; gap:8px; flex-wrap:wrap;}
-.chip{font-size:12px; padding:6px 10px; border-radius:999px; background:#f6f9ff; border:1px solid #dce9ff;}
-
-.fallback{border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#fff; box-shadow:var(--shadow);}
-iframe{display:block; width:100%; border:0;}
-.small{color:var(--muted); font-size:12px; margin-top:6px;}
+.tch{font-size:13px;color:var(--muted);}
+.chips{display:flex;gap:6px;}
+.chip{font-size:12px;background:#eef5ff;padding:4px 8px;border-radius:999px;}
+iframe{width:100%;border:0;}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="header">
-      <div class="logo"><span class="dot"></span><span>YogaSix West New York</span></div>
+<svg class="lotus" viewBox="0 0 64 64"><path d="M32 2c4 10 9 16 17 20-5 5-9 11-10 19-6-3-11-3-17 0-1-8-5-14-10-19 8-4 13-10 17-20zM15 24c3 4 5 9 6 15-5 1-9 4-12 9-2-6-6-10-11-13 5-3 10-6 17-11zm34 0c7 5 12 8 17 11-5 3-9 7-11 13-3-5-7-8-12-9 1-6 3-11 6-15zm-17 16c3 0 6 1 9 2-2 4-3 8-3 13-2-2-4-3-6-3s-4 1-6 3c0-5-1-9-3-13 3-1 6-2 9-2z"/></svg>
+<svg class="lotus" viewBox="0 0 64 64"><path d="M32 2c4 10 9 16 17 20-5 5-9 11-10 19-6-3-11-3-17 0-1-8-5-14-10-19 8-4 13-10 17-20z"/></svg>
+<svg class="lotus" viewBox="0 0 64 64"><path d="M32 2c4 10 9 16 17 20-5 5-9 11-10 19-6-3-11-3-17 0-1-8-5-14-10-19 8-4 13-10 17-20z"/></svg>
+
+<header>
+  <div class="logo">YogaSix West New York</div>
+</header>
+<nav>
+  <a href="#schedule">Schedule</a>
+  <a href="#contact">Contact</a>
+  <a href="https://maps.google.com/?q=45+Riverwalk+Place+West+New+York+NJ+07020" target="_blank">Directions</a>
+  <a href="https://members.yogasix.com/offers/yogasix-west-new-york/3-classes-for-just-36?subtotal=false" target="_blank">Intro Offer</a>
+</nav>
+
+<div class="wrap" id="schedule">
+  <!-- DAILY -->
+  <section class="card">
+    <h2>Today’s Classes</h2>
+    <div class="body">
+      <div id="daily-list" class="list"></div>
     </div>
-    <h1>Daily & Weekly Schedule</h1>
-    <p class="sub">Daily is parsed for readability. Weekly uses the official ClubReady widget.</p>
+  </section>
 
-    <!-- DAILY (parsed) -->
-    <section class="card" id="daily-card">
-      <div class="hd"><h2>Today’s Classes <span id="daily-date"></span></h2></div>
-      <div class="body">
-        <div id="daily-list" class="list" hidden></div>
-        <!-- daily fallback just in case -->
-        <div id="daily-fb" class="fallback" hidden>
-          <iframe
-            src="https://app.clubready.com/admin/api/classdaypublish.asp?ClassKey=8806E19DB49A71056BF278ACF86621C99D5AD8EDA3412CF0"
-            height="640" loading="lazy" title="Daily (ClubReady)"></iframe>
-          <div class="small">Loaded via ClubReady.</div>
-        </div>
-      </div>
-    </section>
+  <!-- WEEKLY -->
+  <section class="card">
+    <h2>This Week</h2>
+    <div class="body">
+      <iframe src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=07C3B1440216478A3711C5DFC09E56EDD66B98407764FC0A" height="900"></iframe>
+    </div>
+  </section>
+</div>
 
-    <!-- WEEKLY (your widget only) -->
-    <section class="card" id="weekly-card">
-      <div class="hd"><h2>This Week (Official Widget)</h2></div>
-      <div class="body">
-        <div class="fallback">
-          <iframe
-            src="https://app.clubready.com/admin/api/classpublish.asp?ClassKey=07C3B1440216478A3711C5DFC09E56EDD66B98407764FC0A"
-            height="900" loading="lazy" title="Weekly (ClubReady)"></iframe>
-        </div>
-      </div>
-    </section>
-  </div>
+<div class="wrap" id="contact">
+  <section class="card">
+    <h2>Contact</h2>
+    <div class="body">
+      <p>Email: <a href="mailto:westnewyork@yogasix.com">westnewyork@yogasix.com</a></p>
+      <p>Phone: (201) 361-5299</p>
+    </div>
+  </section>
+</div>
 
 <script>
-const WORKER = "https://yogasix-schedule.kate-espinal.workers.dev";
-const DAILY  = WORKER + "/daily.json";
-const $ = id => document.getElementById(id);
-const title = s => (s||"").toLowerCase().replace(/\b([a-z])/g,m=>m.toUpperCase()).replace(/\s+/g," ").trim();
-
-function renderDaily(data){
-  const pretty = data.pretty || "";
-  const items = Array.isArray(data.items) ? data.items : [];
-
-  if (pretty) $("daily-date").textContent = "• " + pretty;
-
-  if (!items.length){
-    $("daily-list").hidden = true;
-    $("daily-fb").hidden = false;
-    return;
-  }
-
-  const list = $("daily-list");
-  list.innerHTML = "";
-  for (const it of items){
-    const time = it.time || "--";
-    const cls  = title((it.className||"").replace(/^Y6\s*/i,""));
-    const tch  = title(it.teacher||"");
-    const chips = [];
-    if (it.lengthMins) chips.push(`${it.lengthMins} min`);
-    if (it.heated) chips.push("Heated");
-
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <div class="time">${time}</div>
-      <div>
-        <div class="cls">${cls || "Class"}</div>
-        <div class="tch">${tch ? ("with " + tch) : ""}</div>
-      </div>
-      <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>
-    `;
-    list.appendChild(row);
-  }
-  $("daily-fb").hidden = true;
-  $("daily-list").hidden = false;
-}
-
+const DAILY="https://yogasix-schedule.kate-espinal.workers.dev/daily.json";
 async function loadDaily(){
   try{
-    const r = await fetch(DAILY, { cache: "no-store" });
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    const data = await r.json();
-    renderDaily(data);
-  } catch (e){
-    $("daily-list").hidden = true;
-    $("daily-fb").hidden = false;
-  }
+    const r=await fetch(DAILY); if(!r.ok) throw 0;
+    const d=await r.json(); const list=document.getElementById("daily-list"); list.innerHTML="";
+    (d.items||[]).forEach(it=>{
+      const row=document.createElement("div"); row.className="row";
+      const chips=[]; if(it.lengthMins) chips.push(`${it.lengthMins} min`); if(it.heated) chips.push("Heated");
+      row.innerHTML=`<div class="left"><div class="time">${it.time}</div></div>
+        <div class="left"><div class="cls">${it.className}</div><div class="tch">${it.teacher}</div></div>
+        <div class="chips">${chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div>`;
+      list.appendChild(row);
+    });
+  }catch(e){document.getElementById("daily-list").innerHTML="<p>Unable to load daily schedule.</p>";}
 }
 loadDaily();
-// refresh every 10 minutes
-setInterval(loadDaily, 10*60*1000);
 </script>
 </body>
 </html>
